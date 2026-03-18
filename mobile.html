@@ -103,6 +103,56 @@
     .step-text { font-size: 0.875rem; color: var(--text); line-height: 1.65; padding-top: 3px; }
     .step-text strong { color: var(--primary); }
 
+    /* 問題バナー */
+    .problem-banner {
+      display: flex; align-items: center; gap: 10px;
+      background: var(--card); border-radius: var(--radius);
+      border: 1.5px solid var(--border); padding: 18px 20px;
+      margin-bottom: 20px;
+    }
+    .problem-left, .problem-right {
+      display: flex; align-items: center; gap: 10px; flex: 1;
+      font-size: 0.82rem; line-height: 1.5;
+    }
+    .problem-left strong { color: var(--error); }
+    .problem-right strong { color: var(--success); }
+    .problem-left p, .problem-right p { color: var(--text-muted); font-size: 0.76rem; margin:0; }
+    .problem-icon { font-size: 1.8rem; flex-shrink: 0; }
+    .problem-arrow { font-size: 1.2rem; color: var(--text-light); flex-shrink: 0; }
+
+    /* 比較カード */
+    .compare-card {
+      background: var(--card); border-radius: var(--radius);
+      border: 1.5px solid var(--border); padding: 20px; margin-bottom: 20px;
+    }
+    .compare-grid { display: flex; gap: 20px; align-items: flex-start; justify-content: center; }
+    .compare-item { display: flex; flex-direction: column; align-items: center; gap: 10px; flex: 1; }
+    .phone-mock {
+      border: 2.5px solid var(--border); border-radius: 10px;
+      overflow: hidden; display: flex; width: 100%; max-width: 140px;
+    }
+    .phone-mock.portrait { flex-direction: row; height: 100px; }
+    .phone-mock.landscape { flex-direction: row; height: 70px; max-width: 200px; }
+    .mock-sidebar {
+      background: #e0e7ff; color: #4338ca; font-size: 0.6rem; font-weight: 700;
+      width: 38%; display: flex; align-items: center; justify-content: center;
+      text-align: center; padding: 4px; line-height: 1.4;
+    }
+    .mock-sidebar-sm {
+      background: #e0e7ff; color: #4338ca; font-size: 0.55rem; font-weight: 700;
+      width: 22%; display: flex; align-items: center; justify-content: center;
+      text-align: center; padding: 4px;
+    }
+    .mock-code, .mock-code-lg {
+      flex: 1; display: flex; align-items: center; justify-content: center;
+      font-size: 0.65rem; font-weight: 700; text-align: center; line-height: 1.5; padding: 4px;
+    }
+    .compare-label { font-size: 0.78rem; font-weight: 700; }
+    .bad-label { color: var(--error); }
+    .good-label { color: var(--success); }
+    .compare-item.bad .phone-mock { border-color: #fca5a5; }
+    .compare-item.good .phone-mock { border-color: #6ee7b7; }
+
     /* Tips */
     .tips-card {
       background: linear-gradient(135deg, #fef3c7, #fffbeb);
@@ -137,20 +187,71 @@
 
 <div class="mobile-page">
 
-  <!-- Hero -->
-  <div class="mobile-hero">
-    <span class="mobile-hero-icon">📱✏️</span>
-    <h2>スマホでScratch編集</h2>
-    <p>スマートフォンからScratchのプログラムを作ったり編集できます。<br>TurboWarpを使えばタッチ操作にも対応！</p>
+  <!-- 問題と解決策 -->
+  <div class="problem-banner">
+    <div class="problem-left">
+      <div class="problem-icon">😣</div>
+      <div>
+        <strong>縦向きだとコード画面が狭い！</strong>
+        <p>ブロックパレットが画面の1/3を占めてしまう</p>
+      </div>
+    </div>
+    <div class="problem-arrow">→</div>
+    <div class="problem-right">
+      <div class="problem-icon">😊</div>
+      <div>
+        <strong>横向きにすると2倍広くなる！</strong>
+        <p>コード画面が大幅に広がって使いやすい</p>
+      </div>
+    </div>
+  </div>
+
+  <!-- 横向きCTA -->
+  <div class="turbowarp-card" style="border-color:#f97316;box-shadow:0 0 0 4px rgba(249,115,22,0.08)">
+    <div style="text-align:center">
+      <div style="font-size:3rem;margin-bottom:8px">📱↔️</div>
+      <h3 style="font-size:1.2rem;font-weight:800;color:var(--text);margin-bottom:6px">横向きで開く（おすすめ）</h3>
+      <p style="font-size:0.85rem;color:var(--text-muted);line-height:1.65;max-width:400px">
+        スマホを横にしてTurboWarpを開くとコード画面が<strong style="color:#f97316">約2倍</strong>広くなります。<br>
+        ボタンを押すと自動で横向きになってTurboWarpが開きます。
+      </p>
+    </div>
+    <button onclick="openLandscape()" class="btn-turbowarp" style="background:linear-gradient(135deg,#f97316,#ef4444);box-shadow:0 4px 20px rgba(249,115,22,0.4)">
+      <span style="font-size:1.2rem">↔️</span>
+      横向きでTurboWarpを開く
+    </button>
+    <p style="font-size:0.75rem;color:var(--text-light);text-align:center">
+      ※ 「画面の自動回転」がONになっている必要があります
+    </p>
+  </div>
+
+  <!-- 比較図 -->
+  <div class="compare-card">
+    <h3 style="font-size:0.8rem;font-weight:800;text-transform:uppercase;letter-spacing:0.05em;color:var(--text-muted);margin-bottom:16px">縦向き vs 横向き 比較</h3>
+    <div class="compare-grid">
+      <div class="compare-item bad">
+        <div class="phone-mock portrait">
+          <div class="mock-sidebar">ブロック<br>パレット</div>
+          <div class="mock-code" style="background:#fef2f2;color:#ef4444">コード<br>狭い😣</div>
+        </div>
+        <span class="compare-label bad-label">縦向き NG</span>
+      </div>
+      <div class="compare-item good">
+        <div class="phone-mock landscape">
+          <div class="mock-sidebar-sm">ブロック</div>
+          <div class="mock-code-lg" style="background:#ecfdf5;color:#059669">コード画面<br>広い！😊</div>
+        </div>
+        <span class="compare-label good-label">横向き OK</span>
+      </div>
+    </div>
   </div>
 
   <!-- TurboWarp CTA -->
   <div class="turbowarp-card">
     <span class="tw-logo">⚡</span>
     <div class="tw-info">
-      <h3>TurboWarp エディター</h3>
-      <p>Scratchの互換エディターでスマホ・タブレットでも使いやすい。
-        sb3ファイルの読み込み・保存も対応。Scratchのプロジェクトをそのまま開けます。</p>
+      <h3>TurboWarp エディター（通常）</h3>
+      <p>Scratchの互換エディター。sb3ファイルの読み込み・保存も対応。</p>
       <div class="tw-badges">
         <span class="tw-badge">📱 スマホ対応</span>
         <span class="tw-badge">🆓 完全無料</span>
@@ -160,7 +261,7 @@
     </div>
     <a href="https://turbowarp.org/editor" target="_blank" rel="noopener" class="btn-turbowarp">
       <span class="btn-turbowarp-icon">⚡</span>
-      TurboWarpで編集を開始する
+      TurboWarpで開く
       <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5">
         <path d="M18 13v6a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2V8a2 2 0 0 1 2-2h6M15 3h6v6M10 14L21 3"/>
       </svg>
@@ -251,6 +352,20 @@
 </div>
 
 <script src="js/app.js"></script>
-<script>document.addEventListener('DOMContentLoaded', updateThemeIcon);</script>
+<script>
+document.addEventListener('DOMContentLoaded', updateThemeIcon);
+
+async function openLandscape() {
+  // 横向きロックを試みてからTurboWarpを開く
+  try {
+    if (screen.orientation && screen.orientation.lock) {
+      await screen.orientation.lock('landscape');
+    }
+  } catch(e) {
+    // 自動回転OFFの場合や非対応の場合は無視
+  }
+  window.open('https://turbowarp.org/editor', '_blank');
+}
+</script>
 </body>
 </html>
