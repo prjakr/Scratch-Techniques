@@ -910,19 +910,95 @@ select { appearance: none; background-image: url("data:image/svg+xml,%3Csvg xmln
 .hidden { display: none !important; }
 
 /* ============================================================
-   RESPONSIVE
+   RESPONSIVE - TABLET (768px)
    ============================================================ */
 @media (max-width: 768px) {
-  .header-inner { padding: 0 16px; }
+  .header-inner { padding: 0 16px; height: auto; flex-wrap: wrap; padding: 10px 16px; gap: 10px; }
+  .search-wrap { order: 3; flex: 0 0 100%; max-width: 100%; }
+  .header-actions { margin-left: 0; }
   .logo-text { display: none; }
-  .main { padding: 24px 16px; }
-  .detail-main { padding: 20px 16px; }
-  .settings-page, .form-page { padding: 20px 16px; }
-  .form-card { padding: 22px; }
+  .main { padding: 20px 16px; }
+  .detail-main { padding: 16px; }
+  .settings-page, .form-page { padding: 16px; }
+  .form-card { padding: 20px; }
   .claude-panel { width: 100%; right: -100%; }
-  .cards-grid { grid-template-columns: 1fr; }
+  .cards-grid { grid-template-columns: 1fr; gap: 14px; }
   .auth-features { grid-template-columns: 1fr; }
-  .category-bar { padding: 0 16px; }
+  .category-bar { padding: 0 12px; }
+  .main-header { flex-direction: column; align-items: flex-start; gap: 10px; }
+}
+
+/* ============================================================
+   RESPONSIVE - MOBILE (480px)
+   ============================================================ */
+@media (max-width: 480px) {
+  /* iOS zoom 防止: 入力フォームを16px以上に */
+  input[type=text],
+  input[type=url],
+  input[type=password],
+  select,
+  textarea,
+  .search-input,
+  .claude-input,
+  .tag-text-input { font-size: 16px !important; }
+
+  /* タップ遅延除去 */
+  button, a, .btn, .card, .cat-btn { touch-action: manipulation; }
+
+  /* タップ領域を最低44px確保 */
+  .btn { min-height: 44px; padding: 10px 18px; }
+  .btn-sm { min-height: 36px; padding: 7px 14px; }
+  .btn-icon { min-height: 44px; min-width: 44px; }
+  .cat-btn { min-height: 38px; padding: 8px 16px; font-size: 0.85rem; }
+  .theme-toggle { width: 44px; height: 44px; }
+
+  /* ヘッダー */
+  .header-inner { padding: 8px 14px; gap: 8px; }
+  .logo-icon { font-size: 24px; }
+  .search-input { padding: 11px 18px 11px 42px; }
+
+  /* 認証カード */
+  .auth-card { padding: 28px 20px; }
+  .auth-logo { font-size: 56px; }
+  .auth-card h1 { font-size: 1.4rem; }
+  .auth-feature { padding: 10px; font-size: 0.8rem; }
+
+  /* カード */
+  .card-body { padding: 14px 16px 16px; }
+  .card-title { font-size: 0.95rem; }
+
+  /* 詳細ページ */
+  .panel-body { padding: 16px; }
+  .panel-header { padding: 12px 16px; }
+  .sb3-panel { padding: 14px 16px; flex-wrap: wrap; }
+
+  /* フォーム */
+  .form-card { padding: 16px; }
+  .form-card h2 { font-size: 1.05rem; }
+  .form-actions { flex-direction: column-reverse; }
+  .form-actions .btn { width: 100%; justify-content: center; }
+  .form-row-2 { grid-template-columns: 1fr; }
+
+  /* 設定ページ */
+  .settings-section { padding: 18px 16px; }
+  .settings-section h3 { font-size: 0.85rem; }
+
+  /* AIパネル全画面 */
+  .claude-panel { width: 100%; right: -100%; top: 0; border-radius: 0; }
+  .claude-panel-header { padding: 16px; }
+
+  /* FAB 位置調整 */
+  .fab { bottom: 80px; right: 20px; width: 52px; height: 52px; font-size: 20px; }
+  .fab-claude { bottom: 20px; right: 20px; }
+
+  /* トースト */
+  .toast { bottom: 90px; font-size: 0.82rem; padding: 9px 18px; }
+
+  /* モーダル */
+  .modal { padding: 22px 18px; }
+
+  /* カテゴリバー */
+  .cat-btn { font-size: 0.8rem; padding: 7px 13px; }
 }
 
 /* ============================================================
