@@ -1,0 +1,256 @@
+<!DOCTYPE html>
+<html lang="ja">
+<head>
+  <meta charset="UTF-8">
+  <script>(function(){var t=localStorage.getItem('theme');document.documentElement.setAttribute('data-theme',t||(window.matchMedia&&matchMedia('(prefers-color-scheme:dark)').matches?'dark':'light'));})();</script>
+  <meta name="viewport" content="width=device-width,initial-scale=1">
+  <title>スマホでScratch - Scratch Techniques</title>
+  <link rel="stylesheet" href="css/main.css">
+  <link rel="icon" href="data:image/svg+xml,<svg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 100 100'><text y='.9em' font-size='90'>📱</text></svg>">
+  <style>
+    .mobile-page { max-width: 700px; margin: 0 auto; padding: 28px 20px 80px; }
+
+    /* Hero */
+    .mobile-hero {
+      background: linear-gradient(135deg, #6366f1 0%, #8b5cf6 50%, #ec4899 100%);
+      border-radius: var(--radius-lg); padding: 40px 32px;
+      text-align: center; color: white; margin-bottom: 28px;
+      position: relative; overflow: hidden;
+    }
+    .mobile-hero::before {
+      content: '';
+      position: absolute; inset: 0;
+      background: url("data:image/svg+xml,%3Csvg width='60' height='60' viewBox='0 0 60 60' xmlns='http://www.w3.org/2000/svg'%3E%3Cg fill='none' fill-rule='evenodd'%3E%3Cg fill='%23ffffff' fill-opacity='0.05'%3E%3Ccircle cx='30' cy='30' r='20'/%3E%3C/g%3E%3C/g%3E%3C/svg%3E");
+    }
+    .mobile-hero-icon { font-size: 64px; display: block; margin-bottom: 16px; position: relative; }
+    .mobile-hero h2 {
+      font-size: 1.6rem; font-weight: 800; margin-bottom: 10px;
+      position: relative; letter-spacing: -0.02em;
+    }
+    .mobile-hero p { font-size: 0.95rem; opacity: 0.88; position: relative; line-height: 1.7; }
+
+    /* Main CTA */
+    .turbowarp-card {
+      background: var(--card); border-radius: var(--radius-lg);
+      border: 2px solid #6366f1; box-shadow: 0 0 0 4px rgba(99,102,241,0.08);
+      padding: 28px; margin-bottom: 20px;
+      display: flex; flex-direction: column; align-items: center; gap: 18px;
+    }
+    .tw-logo { font-size: 52px; }
+    .tw-info { text-align: center; }
+    .tw-info h3 { font-size: 1.25rem; font-weight: 800; color: var(--text); margin-bottom: 8px; }
+    .tw-info p { font-size: 0.875rem; color: var(--text-muted); line-height: 1.7; max-width: 460px; }
+    .tw-badges { display: flex; flex-wrap: wrap; justify-content: center; gap: 8px; margin-top: 12px; }
+    .tw-badge {
+      padding: 4px 12px; border-radius: 20px; font-size: 0.75rem; font-weight: 700;
+      background: var(--primary-50); color: var(--primary);
+      border: 1px solid var(--primary-light);
+    }
+    .btn-turbowarp {
+      display: flex; align-items: center; justify-content: center; gap: 10px;
+      padding: 16px 36px; background: linear-gradient(135deg, #6366f1, #8b5cf6);
+      color: white; border: none; border-radius: 32px;
+      font-size: 1rem; font-weight: 700; cursor: pointer;
+      text-decoration: none; box-shadow: 0 4px 20px rgba(99,102,241,0.4);
+      transition: var(--t); width: 100%; max-width: 340px;
+    }
+    .btn-turbowarp:hover { transform: translateY(-2px); box-shadow: 0 8px 28px rgba(99,102,241,0.55); }
+    .btn-turbowarp-icon { font-size: 1.3rem; }
+
+    /* Option cards */
+    .option-grid { display: flex; flex-direction: column; gap: 16px; margin-bottom: 28px; }
+    .option-card {
+      background: var(--card); border-radius: var(--radius);
+      border: 1.5px solid var(--border); padding: 22px;
+      display: flex; gap: 18px; align-items: flex-start;
+    }
+    .option-icon {
+      width: 52px; height: 52px; border-radius: 14px;
+      display: flex; align-items: center; justify-content: center;
+      font-size: 26px; flex-shrink: 0;
+    }
+    .option-icon.purple { background: linear-gradient(135deg, #6366f1, #8b5cf6); }
+    .option-icon.orange { background: linear-gradient(135deg, #f97316, #ef4444); }
+    .option-icon.green  { background: linear-gradient(135deg, #10b981, #059669); }
+    .option-info { flex: 1; min-width: 0; }
+    .option-info h4 { font-size: 0.975rem; font-weight: 700; color: var(--text); margin-bottom: 6px; }
+    .option-info p { font-size: 0.82rem; color: var(--text-muted); line-height: 1.65; }
+    .option-link {
+      display: inline-flex; align-items: center; gap: 5px;
+      margin-top: 10px; color: var(--primary);
+      font-size: 0.8rem; font-weight: 700; text-decoration: none;
+      padding: 5px 14px; background: var(--primary-50);
+      border: 1px solid var(--primary-light); border-radius: 20px;
+      transition: var(--t);
+    }
+    .option-link:hover { background: var(--primary-light); }
+
+    /* Steps */
+    .steps-card {
+      background: var(--card); border-radius: var(--radius);
+      border: 1.5px solid var(--border); padding: 24px; margin-bottom: 20px;
+    }
+    .steps-card h3 { font-size: 0.875rem; font-weight: 800; color: var(--text); margin-bottom: 18px;
+      display: flex; align-items: center; gap: 8px; letter-spacing: 0.03em; text-transform: uppercase; }
+    .steps { display: flex; flex-direction: column; gap: 14px; }
+    .step { display: flex; gap: 14px; align-items: flex-start; }
+    .step-num {
+      width: 28px; height: 28px; border-radius: 50%;
+      background: var(--gradient); color: white;
+      font-size: 0.78rem; font-weight: 800;
+      display: flex; align-items: center; justify-content: center; flex-shrink: 0;
+    }
+    .step-text { font-size: 0.875rem; color: var(--text); line-height: 1.65; padding-top: 3px; }
+    .step-text strong { color: var(--primary); }
+
+    /* Tips */
+    .tips-card {
+      background: linear-gradient(135deg, #fef3c7, #fffbeb);
+      border-radius: var(--radius); border: 1.5px solid #fde68a; padding: 22px;
+    }
+    [data-theme="dark"] .tips-card { background: #422006; border-color: #92400e; }
+    .tips-card h3 { font-size: 0.875rem; font-weight: 800; color: #92400e; margin-bottom: 14px;
+      text-transform: uppercase; letter-spacing: 0.04em; }
+    [data-theme="dark"] .tips-card h3 { color: #fbbf24; }
+    .tip-list { display: flex; flex-direction: column; gap: 8px; }
+    .tip-item { display: flex; gap: 10px; font-size: 0.85rem; color: #78350f; line-height: 1.6; }
+    [data-theme="dark"] .tip-item { color: #fbbf24; }
+    .tip-item span:first-child { flex-shrink: 0; }
+  </style>
+</head>
+<body>
+
+<!-- Header -->
+<header class="header">
+  <div class="header-inner">
+    <a href="index.html" class="btn btn-ghost btn-icon" title="ダッシュボードへ戻る">
+      <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+        <path d="M19 12H5M12 5l-7 7 7 7"/>
+      </svg>
+    </a>
+    <span class="logo-text" style="font-size:1rem">スマホでScratch</span>
+    <div class="header-actions" style="margin-left:auto">
+      <button class="theme-toggle" onclick="toggleDarkMode()" title="ダークモード">🌙</button>
+    </div>
+  </div>
+</header>
+
+<div class="mobile-page">
+
+  <!-- Hero -->
+  <div class="mobile-hero">
+    <span class="mobile-hero-icon">📱✏️</span>
+    <h2>スマホでScratch編集</h2>
+    <p>スマートフォンからScratchのプログラムを作ったり編集できます。<br>TurboWarpを使えばタッチ操作にも対応！</p>
+  </div>
+
+  <!-- TurboWarp CTA -->
+  <div class="turbowarp-card">
+    <span class="tw-logo">⚡</span>
+    <div class="tw-info">
+      <h3>TurboWarp エディター</h3>
+      <p>Scratchの互換エディターでスマホ・タブレットでも使いやすい。
+        sb3ファイルの読み込み・保存も対応。Scratchのプロジェクトをそのまま開けます。</p>
+      <div class="tw-badges">
+        <span class="tw-badge">📱 スマホ対応</span>
+        <span class="tw-badge">🆓 完全無料</span>
+        <span class="tw-badge">🔁 sb3対応</span>
+        <span class="tw-badge">⚡ 高速動作</span>
+      </div>
+    </div>
+    <a href="https://turbowarp.org/editor" target="_blank" rel="noopener" class="btn-turbowarp">
+      <span class="btn-turbowarp-icon">⚡</span>
+      TurboWarpで編集を開始する
+      <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5">
+        <path d="M18 13v6a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2V8a2 2 0 0 1 2-2h6M15 3h6v6M10 14L21 3"/>
+      </svg>
+    </a>
+  </div>
+
+  <!-- Step-by-step: Drive → TurboWarp -->
+  <div class="steps-card">
+    <h3>📦 保存済みsb3をスマホで編集する方法</h3>
+    <div class="steps">
+      <div class="step">
+        <span class="step-num">1</span>
+        <span class="step-text">テクニック詳細ページを開いて <strong>⬇️ ダウンロード</strong> でsb3ファイルを保存</span>
+      </div>
+      <div class="step">
+        <span class="step-num">2</span>
+        <span class="step-text"><strong>TurboWarpエディター</strong>（上のボタン）をブラウザで開く</span>
+      </div>
+      <div class="step">
+        <span class="step-num">3</span>
+        <span class="step-text">左上の <strong>ファイル → コンピューターから読み込む</strong> でダウンロードしたsb3を選択</span>
+      </div>
+      <div class="step">
+        <span class="step-num">4</span>
+        <span class="step-text">編集後は <strong>ファイル → コンピューターに保存</strong> でsb3に書き出す</span>
+      </div>
+      <div class="step">
+        <span class="step-num">5</span>
+        <span class="step-text">テクニックの<strong>編集ページ</strong>から新しいsb3をアップロードして上書き保存</span>
+      </div>
+    </div>
+  </div>
+
+  <!-- Other options -->
+  <div class="option-grid">
+
+    <div class="option-card">
+      <span class="option-icon orange">🐱</span>
+      <div class="option-info">
+        <h4>公式Scratch（デスクトップ表示で使う）</h4>
+        <p>Chromeの「デスクトップ版サイトを表示」をONにすると、スマホでも公式Scratchのエディターが使えます。
+           操作は少し難しいですが、公式の全機能が使えます。</p>
+        <a href="https://scratch.mit.edu/projects/editor/" target="_blank" rel="noopener" class="option-link">
+          Scratch公式エディターを開く ↗
+        </a>
+      </div>
+    </div>
+
+    <div class="option-card">
+      <span class="option-icon green">📂</span>
+      <div class="option-info">
+        <h4>保存済みテクニック一覧</h4>
+        <p>ダッシュボードからテクニックを選んでsb3ファイルをダウンロードできます。
+           TurboWarpでそのまま開いて続きを編集しましょう。</p>
+        <a href="index.html" class="option-link">ダッシュボードへ →</a>
+      </div>
+    </div>
+
+  </div>
+
+  <!-- Tips -->
+  <div class="tips-card">
+    <h3>💡 スマホScratchのコツ</h3>
+    <div class="tip-list">
+      <div class="tip-item">
+        <span>👆</span>
+        <span>ブロックは<strong>長押し</strong>でつかんで動かせます。TurboWarpはタッチ操作に最適化されています。</span>
+      </div>
+      <div class="tip-item">
+        <span>🔍</span>
+        <span>画面が小さい時は<strong>ピンチアウトで拡大</strong>してブロックを操作しましょう。</span>
+      </div>
+      <div class="tip-item">
+        <span>📐</span>
+        <span>タブレットの方が断然操作しやすいです。スマホはゲームのプレイ確認用として使うのもおすすめ。</span>
+      </div>
+      <div class="tip-item">
+        <span>💾</span>
+        <span>こまめに<strong>ファイル → 保存</strong>して作業を失わないようにしましょう。</span>
+      </div>
+      <div class="tip-item">
+        <span>🏠</span>
+        <span>TurboWarpで完成したらScratchのウェブサイトにアップロードすることもできます。</span>
+      </div>
+    </div>
+  </div>
+
+</div>
+
+<script src="js/app.js"></script>
+<script>document.addEventListener('DOMContentLoaded', updateThemeIcon);</script>
+</body>
+</html>

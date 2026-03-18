@@ -1,0 +1,548 @@
+<!DOCTYPE html>
+<html lang="ja">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width,initial-scale=1">
+  <title>設定 - Scratch Techniques</title>
+  <link rel="stylesheet" href="css/main.css">
+  <link rel="icon" href="data:image/svg+xml,<svg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 100 100'><text y='.9em' font-size='90'>🐱</text></svg>">
+</head>
+<body>
+
+<div id="loading" class="hidden">
+  <div class="spinner"></div>
+  <p>処理中...</p>
+</div>
+
+<!-- Header -->
+<header class="header">
+  <div class="header-inner">
+    <a href="index.html" class="btn btn-ghost btn-icon" title="ホームに戻る">
+      <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+        <path d="M19 12H5M12 5l-7 7 7 7"/>
+      </svg>
+    </a>
+    <a href="index.html" class="logo">
+      <span class="logo-icon">🐱</span>
+      <span class="logo-text">設定</span>
+    </a>
+  </div>
+</header>
+
+<div class="settings-page">
+
+  <!-- スマホ転送セクション -->
+  <div class="settings-section" id="qr-section" style="border-color:var(--primary);background:linear-gradient(135deg,var(--primary-50),var(--card))">
+    <h3 style="color:var(--primary)">
+      <span style="font-size:1.1rem">📱</span>
+      スマホに設定を転送（QRコード）
+    </h3>
+    <p style="font-size:0.875rem;color:var(--text-muted);margin-bottom:16px;line-height:1.7">
+      PCで設定を保存した後、QRコードを生成してスマホでスキャンすると<br>
+      <strong style="color:var(--primary)">自動的に設定が入力されます。</strong>
+    </p>
+    <div id="qr-area">
+      <button class="btn btn-primary" onclick="generateQR()">
+        <svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+          <rect x="3" y="3" width="7" height="7"/><rect x="14" y="3" width="7" height="7"/>
+          <rect x="3" y="14" width="7" height="7"/><rect x="17" y="17" width="4" height="4"/>
+          <rect x="14" y="14" width="3" height="3"/>
+        </svg>
+        QRコードを生成する
+      </button>
+    </div>
+    <p style="font-size:0.75rem;color:var(--text-light);margin-top:12px">
+      ⚠️ QRコードにAPIキーが含まれます。公共の場での表示にご注意ください。
+    </p>
+  </div>
+
+  <!-- Google Drive Section -->
+  <div class="settings-section">
+    <h3>
+      <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+        <path d="M22 16.92v3a2 2 0 0 1-2.18 2 19.79 19.79 0 0 1-8.63-3.07A19.5 19.5 0 0 1 4.69 13a19.79 19.79 0 0 1-3.07-8.67A2 2 0 0 1 3.6 2.18h3a2 2 0 0 1 2 1.72c.127.96.361 1.903.7 2.81a2 2 0 0 1-.45 2.11L7.91 9.91a16 16 0 0 0 6 6l1.27-1.27a2 2 0 0 1 2.11-.45c.907.339 1.85.573 2.81.7A2 2 0 0 1 22 16.92z"/>
+      </svg>
+      Google Drive 設定
+    </h3>
+
+    <!-- Status -->
+    <div id="auth-status" style="margin-bottom:16px"></div>
+
+    <!-- Client ID -->
+    <div class="form-row">
+      <label for="google-client-id">Google OAuth Client ID</label>
+      <div class="api-key-wrap">
+        <input type="password" id="google-client-id"
+          placeholder="xxxxxxxxxxxx-xxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxx.apps.googleusercontent.com"
+          autocomplete="off">
+        <button class="toggle-visibility" onclick="toggleVis('google-client-id')">👁</button>
+      </div>
+      <p class="input-hint">Google Cloud Consoleで取得したOAuth 2.0クライアントID</p>
+    </div>
+
+    <div style="display:flex;gap:10px;margin-top:8px">
+      <button class="btn btn-primary" onclick="saveGoogleClientId()">保存</button>
+      <button class="btn btn-secondary" id="signin-btn" onclick="doSignIn()">Googleにサインイン</button>
+      <button class="btn btn-ghost" id="signout-btn" onclick="doSignOut()" style="display:none">サインアウト</button>
+    </div>
+
+    <div class="divider"></div>
+
+    <details>
+      <summary style="cursor:pointer;font-weight:600;font-size:0.9rem;color:var(--primary);margin-bottom:12px">
+        📋 Google Cloud Console 設定手順
+      </summary>
+      <div class="setup-guide">
+        <ol>
+          <li>
+            <a href="https://console.cloud.google.com/" target="_blank" rel="noopener"
+              style="color:var(--primary)">Google Cloud Console</a> を開く
+          </li>
+          <li>新しいプロジェクトを作成（または既存を選択）</li>
+          <li>「APIとサービス」→「ライブラリ」で <code>Google Drive API</code> を有効化</li>
+          <li>「APIとサービス」→「OAuth同意画面」を設定
+            <ul>
+              <li>ユーザータイプ: 外部</li>
+              <li>アプリ名: Scratch Techniques</li>
+              <li>スコープに <code>drive.file</code> を追加</li>
+              <li>テストユーザーに自分のGmailを追加</li>
+            </ul>
+          </li>
+          <li>「認証情報」→「認証情報を作成」→「OAuthクライアントID」
+            <ul>
+              <li>アプリケーションの種類: ウェブアプリケーション</li>
+              <li>承認済みのJavaScriptオリジンに <code>http://localhost:8080</code> を追加</li>
+            </ul>
+          </li>
+          <li>クライアントIDをコピーして上に貼り付け</li>
+        </ol>
+        <p style="margin-top:10px">
+          💡 ローカルで使う場合: <code>python -m http.server 8080</code> でサーバーを起動し
+          <code>http://localhost:8080</code> でアクセス
+        </p>
+      </div>
+    </details>
+  </div>
+
+  <!-- Gemini AI Section -->
+  <div class="settings-section">
+    <h3>
+      <span style="font-size:1.1rem">✨</span>
+      AI アシスタント設定（Google Gemini・完全無料）
+    </h3>
+
+    <!-- Free tier badge -->
+    <div style="background:linear-gradient(135deg,#ecfdf5,#f0fdf4);border:1.5px solid #a7f3d0;
+      border-radius:10px;padding:12px 16px;margin-bottom:16px;font-size:0.85rem;color:#065f46;">
+      🎉 <strong>完全無料！</strong> Gemini 1.5 Flash は無料枠で使用できます<br>
+      <span style="font-size:0.78rem;opacity:0.8">無料枠: 1日1,500回・毎分15回・毎分100万トークン</span>
+    </div>
+
+    <div id="gemini-status" style="margin-bottom:16px"></div>
+
+    <div class="form-row">
+      <label for="gemini-api-key">Google Gemini API Key</label>
+      <div class="api-key-wrap">
+        <input type="password" id="gemini-api-key"
+          placeholder="AIzaSy..."
+          autocomplete="off">
+        <button class="toggle-visibility" onclick="toggleVis('gemini-api-key')">👁</button>
+      </div>
+      <p class="input-hint">
+        <a href="https://aistudio.google.com/app/apikey" target="_blank" rel="noopener"
+          style="color:var(--primary);font-weight:600">Google AI Studio</a>
+        で無料で取得できます（Googleアカウントのみ必要）
+      </p>
+    </div>
+
+    <div class="settings-info">
+      ⚠️ APIキーはブラウザのlocalStorageに保存されます。個人での使用を想定しています。
+    </div>
+
+    <div style="margin-top:12px;display:flex;gap:10px;align-items:center;flex-wrap:wrap">
+      <button class="btn btn-primary" onclick="saveGeminiKey()">保存</button>
+      <button class="btn btn-secondary" onclick="testGemini()">接続テスト</button>
+      <span id="gemini-test-result" style="font-size:0.85rem"></span>
+    </div>
+
+    <div class="divider"></div>
+
+    <details>
+      <summary style="cursor:pointer;font-weight:600;font-size:0.9rem;color:var(--primary);margin-bottom:12px">
+        📋 Gemini APIキー取得手順（2分でできます）
+      </summary>
+      <div class="setup-guide">
+        <ol>
+          <li>
+            <a href="https://aistudio.google.com/app/apikey" target="_blank" rel="noopener"
+              style="color:var(--primary)">Google AI Studio</a> をGoogleアカウントで開く
+          </li>
+          <li>「Create API key」ボタンをクリック</li>
+          <li>「Create API key in new project」を選択</li>
+          <li>生成されたキー（<code>AIzaSy...</code>）をコピー</li>
+          <li>上の入力欄に貼り付けて「保存」</li>
+        </ol>
+        <p style="margin-top:10px;color:#065f46">
+          ✅ クレジットカード不要・完全無料で使えます
+        </p>
+      </div>
+    </details>
+  </div>
+
+  <!-- App Settings -->
+  <div class="settings-section">
+    <h3>
+      <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+        <circle cx="12" cy="12" r="3"/>
+        <path d="M12 1v2m0 18v2M4.22 4.22l1.42 1.42m12.72 12.72 1.42 1.42M1 12h2m18 0h2M4.22 19.78l1.42-1.42M18.36 5.64l1.42-1.42"/>
+      </svg>
+      アプリ設定
+    </h3>
+
+    <div style="display:flex;align-items:center;justify-content:space-between;font-size:0.9rem;margin-bottom:16px">
+      <div>
+        <div style="font-weight:600">Scratch埋め込みをリンクに変更</div>
+        <div style="color:var(--text-muted);font-size:0.8rem">埋め込みの代わりにリンクボタンを表示します</div>
+      </div>
+      <label style="position:relative;display:inline-block;width:44px;height:24px;cursor:pointer">
+        <input type="checkbox" id="scratch-link-mode" style="opacity:0;width:0;height:0">
+        <span id="scratch-slider" style="
+          position:absolute;inset:0;border-radius:24px;
+          background:var(--border);transition:0.3s;cursor:pointer;
+        "></span>
+      </label>
+    </div>
+
+    <div class="divider"></div>
+
+    <div style="margin-top:4px">
+      <div style="font-weight:600;font-size:0.9rem;margin-bottom:8px">キャッシュをリセット</div>
+      <p style="font-size:0.83rem;color:var(--text-muted);margin-bottom:10px">
+        Google DriveのフォルダIDキャッシュを削除します。<br>
+        フォルダが見つからない場合に試してください。
+      </p>
+      <button class="btn btn-danger btn-sm" onclick="clearCache()">
+        🗑️ キャッシュを削除
+      </button>
+    </div>
+  </div>
+
+  <!-- About -->
+  <div class="settings-section">
+    <div style="text-align:center;padding:8px 0 16px">
+      <p style="font-size:1.8rem;margin-bottom:6px">🐱</p>
+      <p style="font-weight:700;font-size:1.05rem;color:var(--text)">Scratch Techniques Manager</p>
+      <div style="display:inline-flex;align-items:center;gap:8px;margin-top:6px">
+        <span id="ver-badge" style="
+          background:var(--gradient);color:#fff;
+          font-size:0.75rem;font-weight:700;
+          padding:3px 10px;border-radius:20px;letter-spacing:0.05em">
+        </span>
+        <span style="font-size:0.78rem;color:var(--text-muted)">Gemini 1.5 Flash・完全無料</span>
+      </div>
+    </div>
+
+    <details>
+      <summary style="cursor:pointer;font-weight:600;font-size:0.88rem;color:var(--primary);margin-bottom:10px">
+        📋 更新履歴 (CHANGELOG)
+      </summary>
+      <div id="changelog-list" style="font-size:0.82rem;line-height:1.9"></div>
+    </details>
+  </div>
+
+</div><!-- /.settings-page -->
+
+<style>
+  details summary::-webkit-details-marker { display:none; }
+  details summary::before { content: "▶ "; font-size:0.8em; }
+  details[open] summary::before { content: "▼ "; }
+</style>
+
+<script src="https://accounts.google.com/gsi/client" async defer></script>
+<script src="js/app.js"></script>
+<script>
+
+// ============================================================
+// QRコード転送
+// ============================================================
+function generateQR() {
+  const clientId = localStorage.getItem('google_client_id') || '';
+  const geminiKey = localStorage.getItem('gemini_api_key') || '';
+
+  if (!clientId && !geminiKey) {
+    showToast('先にClient IDとAPIキーを保存してください', 'error');
+    return;
+  }
+
+  const payload = btoa(JSON.stringify({ g: clientId, k: geminiKey }));
+  const url = window.location.origin + window.location.pathname + '?setup=' + payload;
+  const qrApiUrl = 'https://api.qrserver.com/v1/create-qr-code/?size=240x240&margin=10&data=' + encodeURIComponent(url);
+
+  const isLocalhost = window.location.hostname === 'localhost' || window.location.hostname === '127.0.0.1';
+  const warning = isLocalhost
+    ? `<div style="background:#fef3c7;border:1px solid #fde68a;border-radius:8px;padding:10px;font-size:0.78rem;color:#92400e;margin-top:10px;line-height:1.6">
+        ⚠️ ローカル環境では同じWiFi内のみ有効です。<br>
+        GitHub Pagesに公開すると、どこからでも使えます。
+       </div>`
+    : '';
+
+  document.getElementById('qr-area').innerHTML = `
+    <div style="text-align:center">
+      <img src="${qrApiUrl}" alt="QR Code"
+        style="border-radius:12px;border:3px solid var(--border);max-width:240px;display:block;margin:0 auto">
+      <p style="font-size:0.85rem;color:var(--success);font-weight:600;margin-top:10px">
+        ✅ スマホのカメラでスキャンしてください
+      </p>
+      <p style="font-size:0.75rem;color:var(--text-light);margin-top:6px">
+        設定ページが開き、自動でClient IDとAPIキーが入力されます
+      </p>
+      ${warning}
+      <button class="btn btn-ghost btn-sm" onclick="resetQR()" style="margin-top:12px">
+        ✕ 閉じる
+      </button>
+    </div>`;
+}
+
+function resetQR() {
+  document.getElementById('qr-area').innerHTML = `
+    <button class="btn btn-primary" onclick="generateQR()">
+      <svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+        <rect x="3" y="3" width="7" height="7"/><rect x="14" y="3" width="7" height="7"/>
+        <rect x="3" y="14" width="7" height="7"/><rect x="17" y="17" width="4" height="4"/>
+        <rect x="14" y="14" width="3" height="3"/>
+      </svg>
+      QRコードを生成する
+    </button>`;
+}
+
+// URLパラメータから自動インポート
+function checkSetupParam() {
+  const params = new URLSearchParams(location.search);
+  const setup = params.get('setup');
+  if (!setup) return;
+  try {
+    const data = JSON.parse(atob(setup));
+    let imported = [];
+    if (data.g) { localStorage.setItem('google_client_id', data.g); imported.push('Client ID'); }
+    if (data.k) { localStorage.setItem('gemini_api_key', data.k); imported.push('Gemini APIキー'); }
+    // URLパラメータを除去してリロード
+    history.replaceState({}, '', location.pathname);
+    if (imported.length > 0) {
+      showToast('設定をインポートしました: ' + imported.join('・') + ' ✓', 'success');
+      document.getElementById('google-client-id').value = localStorage.getItem('google_client_id') || '';
+      document.getElementById('gemini-api-key').value = localStorage.getItem('gemini_api_key') || '';
+      updateGeminiStatus();
+    }
+  } catch(e) {
+    showToast('設定のインポートに失敗しました', 'error');
+  }
+}
+
+// ============================================================
+// Load saved values
+// ============================================================
+window.addEventListener('DOMContentLoaded', () => {
+  // バージョンバッジ
+  const badge = document.getElementById('ver-badge');
+  if (badge) badge.textContent = typeof APP_VERSION !== 'undefined' ? APP_VERSION : 'v?.?.?';
+
+  // CHANGELOG レンダリング
+  const cl = document.getElementById('changelog-list');
+  if (cl && typeof CHANGELOG !== 'undefined') {
+    cl.innerHTML = CHANGELOG.map((c, i) => `
+      <div style="display:flex;gap:10px;align-items:flex-start;padding:6px 0;
+        ${i < CHANGELOG.length - 1 ? 'border-bottom:1px solid var(--border);' : ''}">
+        <span style="background:${i === 0 ? 'var(--primary)' : 'var(--border)'};
+          color:${i === 0 ? '#fff' : 'var(--text-muted)'};
+          font-size:0.72rem;font-weight:700;padding:2px 7px;border-radius:10px;
+          white-space:nowrap;margin-top:1px">${c.ver}</span>
+        <span style="color:var(--text-muted);white-space:nowrap;font-size:0.78rem;padding-top:2px">${c.date}</span>
+        <span style="color:var(--text);flex:1">${c.note}</span>
+      </div>`).join('');
+  }
+
+  document.getElementById('google-client-id').value =
+    localStorage.getItem('google_client_id') || '';
+  document.getElementById('gemini-api-key').value =
+    localStorage.getItem('gemini_api_key') || '';
+
+  checkSetupParam();
+
+  // Toggles
+  initToggle('scratch-link-mode', 'scratch-slider', 'scratch_embed', 'link', '');
+
+  updateGeminiStatus();
+  updateAuthStatus();
+
+  // Init Google auth if clientId exists
+  const tryInit = () => {
+    if (typeof google !== 'undefined' && google.accounts) {
+      initGoogleAuth();
+      updateAuthStatus();
+    } else {
+      setTimeout(tryInit, 200);
+    }
+  };
+  tryInit();
+});
+
+// ============================================================
+// TOGGLE SWITCH
+// ============================================================
+function initToggle(checkId, sliderId, storageKey, onValue = 'true', offValue = 'false') {
+  const cb = document.getElementById(checkId);
+  const slider = document.getElementById(sliderId);
+  if (!cb || !slider) return;
+
+  const isOn = localStorage.getItem(storageKey) === onValue;
+  cb.checked = isOn;
+  slider.style.background = isOn ? 'var(--primary)' : 'var(--border)';
+
+  cb.addEventListener('change', () => {
+    slider.style.background = cb.checked ? 'var(--primary)' : 'var(--border)';
+    localStorage.setItem(storageKey, cb.checked ? onValue : offValue);
+  });
+}
+
+// ============================================================
+// GOOGLE
+// ============================================================
+function saveGoogleClientId() {
+  const val = document.getElementById('google-client-id').value.trim();
+  if (!val) { showToast('Client IDを入力してください', 'error'); return; }
+  localStorage.setItem('google_client_id', val);
+  // Clear cached folder IDs when client ID changes
+  localStorage.removeItem('root_folder_id');
+  localStorage.removeItem('screenshots_folder_id');
+  localStorage.removeItem('sb3_folder_id');
+  localStorage.removeItem('data_file_id');
+  showToast('Google Client IDを保存しました ✓');
+  const tryInit = () => {
+    if (typeof google !== 'undefined' && google.accounts) {
+      initGoogleAuth();
+    } else { setTimeout(tryInit, 200); }
+  };
+  tryInit();
+}
+
+function doSignIn() {
+  saveGoogleClientId();
+  setTimeout(() => signIn(), 500);
+}
+
+function doSignOut() {
+  signOut();
+  updateAuthStatus();
+}
+
+function onSignIn() {
+  showToast('サインインしました ✓');
+  updateAuthStatus();
+  document.getElementById('signin-btn').style.display = 'none';
+  document.getElementById('signout-btn').style.display = '';
+}
+
+function onSignOut() {
+  updateAuthStatus();
+}
+
+function updateAuthStatus() {
+  const el = document.getElementById('auth-status');
+  if (!el) return;
+  const clientId = localStorage.getItem('google_client_id');
+  if (!clientId) {
+    el.innerHTML = `<span class="status-badge status-ng">✗ Client ID未設定</span>`;
+    document.getElementById('signin-btn').style.display = '';
+    document.getElementById('signout-btn').style.display = 'none';
+    return;
+  }
+  if (appState.isSignedIn) {
+    el.innerHTML = `<span class="status-badge status-ok">✓ サインイン済み</span>`;
+    document.getElementById('signin-btn').style.display = 'none';
+    document.getElementById('signout-btn').style.display = '';
+  } else {
+    el.innerHTML = `<span class="status-badge status-ng">✗ 未サインイン</span>`;
+    document.getElementById('signin-btn').style.display = '';
+    document.getElementById('signout-btn').style.display = 'none';
+  }
+}
+
+// ============================================================
+// GEMINI
+// ============================================================
+function saveGeminiKey() {
+  const val = document.getElementById('gemini-api-key').value.trim();
+  if (!val) { showToast('APIキーを入力してください', 'error'); return; }
+  if (!val.startsWith('AIza')) {
+    showToast('Gemini APIキーは「AIza」で始まります', 'warning');
+  }
+  localStorage.setItem('gemini_api_key', val);
+  showToast('Gemini APIキーを保存しました ✓');
+  updateGeminiStatus();
+}
+
+function updateGeminiStatus() {
+  const el = document.getElementById('gemini-status');
+  if (!el) return;
+  const key = localStorage.getItem('gemini_api_key');
+  el.innerHTML = key
+    ? `<span class="status-badge status-ok">✓ APIキー設定済み（無料）</span>`
+    : `<span class="status-badge status-ng">✗ APIキー未設定</span>`;
+}
+
+async function testGemini() {
+  const key = localStorage.getItem('gemini_api_key');
+  const result = document.getElementById('gemini-test-result');
+  if (!key) { result.textContent = '❌ APIキーが設定されていません'; return; }
+
+  result.textContent = '⏳ テスト中...';
+  try {
+    const res = await fetch(
+      `https://generativelanguage.googleapis.com/v1beta/models/gemini-1.5-flash:generateContent?key=${key}`,
+      {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({
+          contents: [{ role: 'user', parts: [{ text: 'こんにちは' }] }],
+          generationConfig: { maxOutputTokens: 20 },
+        }),
+      }
+    );
+    if (res.ok) {
+      const data = await res.json();
+      const text = data.candidates?.[0]?.content?.parts?.[0]?.text || 'OK';
+      result.innerHTML = `✅ <span style="color:var(--success)">接続成功！「${text.slice(0, 20)}」</span>`;
+    } else {
+      const err = await res.json().catch(() => ({}));
+      result.innerHTML = `❌ <span style="color:var(--error)">${err.error?.message || 'HTTP ' + res.status}</span>`;
+    }
+  } catch (e) {
+    result.innerHTML = `❌ <span style="color:var(--error)">${e.message}</span>`;
+  }
+}
+
+// ============================================================
+// CACHE
+// ============================================================
+function clearCache() {
+  if (!confirm('キャッシュを削除しますか？')) return;
+  ['root_folder_id','screenshots_folder_id','sb3_folder_id','data_file_id'].forEach(k => {
+    localStorage.removeItem(k);
+    appState.rootFolderId = null;
+    appState.screenshotsFolderId = null;
+    appState.sb3FolderId = null;
+    appState.dataFileId = null;
+  });
+  showToast('キャッシュを削除しました');
+}
+
+// ============================================================
+// UTILS
+// ============================================================
+function toggleVis(id) {
+  const el = document.getElementById(id);
+  if (el) el.type = el.type === 'password' ? 'text' : 'password';
+}
+</script>
+</body>
+</html>
