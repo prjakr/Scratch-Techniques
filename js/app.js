@@ -11,6 +11,15 @@ const CHANGELOG = [
   { ver: 'v1.0.0', date: '2026-03-14', note: '初回リリース' },
 ];
 
+// ============================================================
+// デフォルト設定（自動入力）- localStorageが空のとき使われる
+// ============================================================
+const DEFAULT_CLIENT_ID  = '909131026-gdchr152acqnusc2mq3ue51341g5o71i.apps.googleusercontent.com';
+const DEFAULT_GEMINI_KEY = 'AIzaSyBclzhxuoVrKAe6w4wbCQG8Iq4NtwxcGt0';
+
+function getClientId()  { return localStorage.getItem('google_client_id')  || DEFAULT_CLIENT_ID;  }
+function getGeminiKey() { return localStorage.getItem('gemini_api_key')     || DEFAULT_GEMINI_KEY; }
+
 const DRIVE_SCOPE = 'https://www.googleapis.com/auth/drive.file';
 const ROOT_FOLDER_NAME = 'Scratch Techniques';
 const DATA_FILE_NAME = 'techniques.json';
@@ -61,7 +70,7 @@ const appState = {
 let tokenClient = null;
 
 function initGoogleAuth() {
-  const clientId = localStorage.getItem('google_client_id');
+  const clientId = getClientId();
   if (!clientId || typeof google === 'undefined') return false;
   try {
     tokenClient = google.accounts.oauth2.initTokenClient({

@@ -93,7 +93,7 @@ function createClaudePanel() {
 }
 
 function checkApiKey() {
-  const key = localStorage.getItem('gemini_api_key');
+  const key = getGeminiKey();
   const noKey = document.getElementById('claude-no-key');
   const inputWrap = document.querySelector('.claude-input-wrap');
   const quick = document.getElementById('claude-quick');
@@ -184,7 +184,7 @@ async function sendMessage() {
   const text = input.value.trim();
   if (!text) return;
 
-  const apiKey = localStorage.getItem('gemini_api_key');
+  const apiKey = getGeminiKey();
   if (!apiKey) { checkApiKey(); return; }
 
   input.value = '';

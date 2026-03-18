@@ -491,7 +491,7 @@ function updateGeminiStatus() {
 }
 
 async function testGemini() {
-  const key = localStorage.getItem('gemini_api_key');
+  const key = getGeminiKey();
   const result = document.getElementById('gemini-test-result');
   if (!key) { result.textContent = '❌ APIキーが設定されていません'; return; }
 
