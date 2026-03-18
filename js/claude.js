@@ -1,6 +1,6 @@
 // ============================================================
 // claude.js - AI Chat Panel (Google Gemini API - 完全無料)
-// モデル: gemini-1.5-flash  無料枠: 1日1500回・毎分15回
+// モデル: gemini-2.5-flash  無料枠: 1日1500回・毎分15回
 // ============================================================
 
 const claudeState = {
@@ -241,7 +241,7 @@ async function callGemini(apiKey, messages) {
   };
 
   const res = await fetch(
-    `https://generativelanguage.googleapis.com/v1beta/models/gemini-1.5-flash:generateContent?key=${apiKey}`,
+    `https://generativelanguage.googleapis.com/v1beta/models/gemini-2.5-flash:generateContent?key=${apiKey}`,
     { method: 'POST', headers: { 'Content-Type': 'application/json' }, body: JSON.stringify(body) }
   );
 

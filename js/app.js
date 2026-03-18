@@ -4,7 +4,7 @@
 
 const APP_VERSION = 'v1.4.0';
 const CHANGELOG = [
-  { ver: 'v1.4.0', date: '2026-03-18', note: 'AIモデルを gemini-1.5-flash に更新・バージョン管理追加' },
+  { ver: 'v1.4.0', date: '2026-03-18', note: 'AIモデルを gemini-2.5-flash に更新・バージョン管理追加' },
   { ver: 'v1.3.0', date: '2026-03-17', note: 'スマホ用QRコード設定転送機能追加' },
   { ver: 'v1.2.0', date: '2026-03-16', note: 'AIをGemini API(完全無料)に移行・Dark/Light切替' },
   { ver: 'v1.1.0', date: '2026-03-15', note: 'UIリニューアル（グラスモーフィズム・カテゴリカラー）' },
