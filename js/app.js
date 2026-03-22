@@ -2,9 +2,10 @@
 // app.js - Core: Auth, Google Drive API, Data Management
 // ============================================================
 
-const APP_VERSION = 'v1.5.1';
+const APP_VERSION = 'v1.5.2';
 const CHANGELOG = [
-  { ver: 'v1.5.1', date: '2026-03-22', note: '勉強アプリをScratch学習専用に変更（算数・国語など削除）' },
+  { ver: 'v1.5.2', date: '2026-03-22', note: '学習カテゴリをテクニック一覧から分離・浸食バグ修正' },
+  { ver: 'v1.5.1', date: '2026-03-22', note: '勉強アプリをScratch学習専用に変更' },
   { ver: 'v1.5.0', date: '2026-03-22', note: 'ポータル画面・べんきょうアプリ追加' },
   { ver: 'v1.4.0', date: '2026-03-18', note: 'AIモデルを gemini-2.5-flash に更新・バージョン管理追加' },
   { ver: 'v1.3.0', date: '2026-03-17', note: 'スマホ用QRコード設定転送機能追加' },
@@ -37,14 +38,6 @@ const CATEGORIES = [
   '音楽・アート',
   'シミュレーション',
   'その他',
-  // Scratch学習カテゴリ
-  'きほん',
-  'うごき',
-  'みため',
-  'おと・音楽',
-  'せいぎょ',
-  'ゲーム作り',
-  'アート・アニメ',
 ];
 
 const CATEGORY_EMOJI = {

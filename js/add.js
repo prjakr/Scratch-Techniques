@@ -303,11 +303,23 @@ document.addEventListener('DOMContentLoaded', () => {
   // Build category options
   const sel = document.getElementById('category');
   if (sel) {
+    const grp1 = document.createElement('optgroup');
+    grp1.label = '── ゲーム・作品 ──';
     CATEGORIES.filter(c => c !== 'すべて').forEach(cat => {
       const opt = document.createElement('option');
       opt.value = cat; opt.textContent = `${CATEGORY_EMOJI[cat] || ''} ${cat}`;
-      sel.appendChild(opt);
+      grp1.appendChild(opt);
     });
+    sel.appendChild(grp1);
+
+    const grp2 = document.createElement('optgroup');
+    grp2.label = '── Scratch学習 ──';
+    STUDY_CATEGORIES.forEach(cat => {
+      const opt = document.createElement('option');
+      opt.value = cat; opt.textContent = `${CATEGORY_EMOJI[cat] || ''} ${cat}`;
+      grp2.appendChild(opt);
+    });
+    sel.appendChild(grp2);
   }
 
   showLoading(true);
