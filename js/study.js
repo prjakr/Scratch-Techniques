@@ -1,77 +1,64 @@
 // ============================================================
-// study.js - 小学生べんきょうアプリ
+// study.js - べんきょうアプリ レッスン一覧
 // ============================================================
 
 const SUBJECTS = [
-  { id: 'all',       label: 'ぜんぶ',    emoji: '🎯', color: '#6366f1' },
-  { id: 'きほん',    label: 'きほん',    emoji: '⭐', color: '#6366f1' },
-  { id: 'うごき',    label: 'うごき',    emoji: '🏃', color: '#f97316' },
-  { id: 'みため',    label: 'みため',    emoji: '👀', color: '#ec4899' },
-  { id: 'おと・音楽', label: 'おと',     emoji: '🎵', color: '#8b5cf6' },
-  { id: 'せいぎょ',  label: 'せいぎょ',  emoji: '🔄', color: '#10b981' },
-  { id: 'ゲーム作り', label: 'ゲーム',   emoji: '🎮', color: '#3b82f6' },
+  { id: 'all',        label: 'ぜんぶ',  emoji: '🎯', color: '#6366f1' },
+  { id: 'きほん',     label: 'きほん',  emoji: '⭐', color: '#6366f1' },
+  { id: 'うごき',     label: 'うごき',  emoji: '🏃', color: '#f97316' },
+  { id: 'みため',     label: 'みため',  emoji: '👀', color: '#ec4899' },
+  { id: 'おと・音楽', label: 'おと',    emoji: '🎵', color: '#8b5cf6' },
+  { id: 'せいぎょ',   label: 'せいぎょ',emoji: '🔄', color: '#10b981' },
+  { id: 'ゲーム作り', label: 'ゲーム',  emoji: '🎮', color: '#3b82f6' },
   { id: 'アート・アニメ', label: 'アート', emoji: '🎨', color: '#f59e0b' },
 ];
-
-const GRADES = [
-  { id: 'all',    label: 'ぜんぶ' },
-  { id: 'かんたん', label: 'かんたん' },
-  { id: 'ふつう',  label: 'ふつう'  },
-  { id: 'むずかしい', label: 'むずかしい' },
+const DIFFS = [
+  { id: 'all',     label: 'ぜんぶ' },
+  { id: 'かんたん', label: '⭐ かんたん' },
+  { id: 'ふつう',  label: '⭐⭐ ふつう' },
+  { id: 'むずかしい', label: '⭐⭐⭐ むずかしい' },
 ];
 
 let currentSubject = 'all';
-let currentGrade = 'all';
+let currentDiff = 'all';
 
 function renderSubjects() {
   const list = document.getElementById('subject-list');
   if (!list) return;
   list.innerHTML = SUBJECTS.map(s => `
     <button class="study-subject-btn ${s.id === currentSubject ? 'active' : ''}"
-      data-subj="${s.id}" style="--s-color:${s.color}"
-      onclick="selectSubject('${s.id}')">
+      style="--s-color:${s.color}" onclick="selectSubject('${s.id}')">
       <span class="subj-emoji">${s.emoji}</span>
       <span class="subj-label">${s.label}</span>
     </button>
   `).join('');
 }
 
-function renderGrades() {
-  const list = document.getElementById('grade-list');
+function renderDiffs() {
+  const list = document.getElementById('difficulty-list');
   if (!list) return;
-  list.innerHTML = GRADES.map(g => `
-    <button class="grade-btn ${g.id === currentGrade ? 'active' : ''}"
-      data-grade="${g.id}" onclick="selectGrade('${g.id}')">
-      ${g.label}
-    </button>
+  list.innerHTML = DIFFS.map(d => `
+    <button class="grade-btn ${d.id === currentDiff ? 'active' : ''}"
+      onclick="selectDiff('${d.id}')">${d.label}</button>
   `).join('');
 }
 
-function selectSubject(subj) {
-  currentSubject = subj;
-  renderSubjects();
-  renderCards();
-}
+function selectSubject(s) { currentSubject = s; renderSubjects(); renderCards(); }
+function selectDiff(d) { currentDiff = d; renderDiffs(); renderCards(); }
 
-function selectGrade(grade) {
-  currentGrade = grade;
-  renderGrades();
-  renderCards();
-}
-
-function getFilteredItems() {
-  let items = appState.techniques.filter(t => STUDY_CATEGORIES.includes(t.category));
-  if (currentSubject !== 'all') {
-    items = items.filter(t => t.category === currentSubject);
-  }
-  if (currentGrade !== 'all') {
-    items = items.filter(t => (t.tags || []).includes(currentGrade));
-  }
+function getFiltered() {
+  let items = appState.lessons || [];
+  if (currentSubject !== 'all') items = items.filter(l => l.category === currentSubject);
+  if (currentDiff !== 'all') items = items.filter(l => l.difficulty === currentDiff);
   return items;
 }
 
+function diffStars(d) {
+  return { 'かんたん': '⭐', 'ふつう': '⭐⭐', 'むずかしい': '⭐⭐⭐' }[d] || '';
+}
+
 function renderCards() {
-  const items = getFilteredItems();
+  const items = getFiltered();
   const grid = document.getElementById('study-grid');
   const countEl = document.getElementById('study-count');
   if (!grid) return;
@@ -81,31 +68,35 @@ function renderCards() {
     grid.innerHTML = `
       <div class="study-empty">
         <div class="study-empty-icon">📝</div>
-        <p>まだコンテンツがありません</p>
+        <p>まだレッスンがありません</p>
         <p style="font-size:0.82rem;color:var(--text-light);margin-bottom:20px">
-          「追加」ボタンから勉強コンテンツを登録しよう！<br>
-          カテゴリに「算数」「国語」などを選ぶと表示されます。
+          ＋ボタンからレッスンを追加しよう！<br>
+          スライドとScratchをセットで登録できます。
         </p>
-        <a href="add.html" class="btn btn-primary">＋ 追加する</a>
+        <a href="study-add.html" class="btn btn-primary">＋ レッスンを追加</a>
       </div>
     `;
     return;
   }
 
-  if (countEl) countEl.textContent = `${items.length} こ あります`;
-  grid.innerHTML = items.map(t => {
-    const color = STUDY_COLORS[t.category] || '#6366f1';
-    const emoji = CATEGORY_EMOJI[t.category] || '📚';
-    const tags = (t.tags || []);
+  if (countEl) countEl.textContent = `${items.length} レッスン`;
+  const color = c => STUDY_COLORS[c] || '#6366f1';
+  const emoji = c => ({ 'きほん':'⭐','うごき':'🏃','みため':'👀','おと・音楽':'🎵','せいぎょ':'🔄','ゲーム作り':'🎮','アート・アニメ':'🎨' }[c] || '📚');
+
+  grid.innerHTML = items.map(l => {
+    const thumb = l.slides?.[0]
+      ? `<img src="${getDriveImageUrl(l.slides[0].fileId)}" alt="" loading="lazy">`
+      : `<span>${emoji(l.category)}</span>`;
     return `
-      <div class="study-card" style="--card-color:${color}">
+      <div class="study-card" style="--card-color:${color(l.category)}">
+        <div class="study-card-thumb">${thumb}</div>
         <div class="study-card-top">
-          <span class="study-card-emoji">${emoji}</span>
-          <span class="study-card-cat">${escapeHtml(t.category)}</span>
+          <span class="study-card-emoji">${emoji(l.category)}</span>
+          <span class="study-card-cat">${escapeHtml(l.category || '')}</span>
         </div>
-        <h3 class="study-card-title">${escapeHtml(t.title)}</h3>
-        ${tags.length ? `<div class="study-card-tags">${tags.map(tag => `<span class="study-tag">${escapeHtml(tag)}</span>`).join('')}</div>` : ''}
-        <a href="detail.html?id=${t.id}" class="study-play-btn">▶ あそぶ！</a>
+        <h3 class="study-card-title">${escapeHtml(l.title)}</h3>
+        <div class="study-diff">${diffStars(l.difficulty)}</div>
+        <a href="study-lesson.html?id=${l.id}" class="study-play-btn">▶ はじめる</a>
       </div>
     `;
   }).join('');
@@ -114,14 +105,15 @@ function renderCards() {
 async function onSignIn() {
   showLoading(true);
   try {
-    await loadTechniques();
+    await loadLessons();
     document.getElementById('auth-screen')?.classList.remove('visible');
     document.getElementById('app-content')?.classList.remove('hidden');
+    document.getElementById('fab-add').style.display = '';
     renderSubjects();
-    renderGrades();
+    renderDiffs();
     renderCards();
   } catch (e) {
-    showToast('データの読み込みに失敗しました: ' + e.message, 'error');
+    showToast('読み込みに失敗しました: ' + e.message, 'error');
   } finally {
     showLoading(false);
   }
@@ -135,29 +127,25 @@ function onSignOut() {
 document.addEventListener('DOMContentLoaded', () => {
   document.getElementById('signin-btn')?.addEventListener('click', signIn);
   renderSubjects();
-  renderGrades();
+  renderDiffs();
   updateThemeIcon();
 
   showLoading(true);
   const tryInit = () => {
     if (typeof google !== 'undefined' && google.accounts) {
       const ok = initGoogleAuth();
-      if (!ok) {
-        showLoading(false);
-        document.getElementById('auth-screen')?.classList.add('visible');
-        return;
-      }
+      if (!ok) { showLoading(false); document.getElementById('auth-screen')?.classList.add('visible'); return; }
       if (tryRestoreSession()) { onSignIn(); return; }
       const clientId = localStorage.getItem('google_client_id');
-      if (clientId && appState.dataFileId) {
+      if (clientId && appState.studyDataFileId) {
+        tokenClient.requestAccessToken({ prompt: '' });
+      } else if (clientId) {
         tokenClient.requestAccessToken({ prompt: '' });
       } else {
         showLoading(false);
         document.getElementById('auth-screen')?.classList.add('visible');
       }
-    } else {
-      setTimeout(tryInit, 200);
-    }
+    } else { setTimeout(tryInit, 200); }
   };
   tryInit();
 });

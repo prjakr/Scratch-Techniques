@@ -2,8 +2,9 @@
 // app.js - Core: Auth, Google Drive API, Data Management
 // ============================================================
 
-const APP_VERSION = 'v1.5.2';
+const APP_VERSION = 'v1.6.0';
 const CHANGELOG = [
+  { ver: 'v1.6.0', date: '2026-03-22', note: 'べんきょうアプリ全面改修：スライド+Scratch授業ビューア実装' },
   { ver: 'v1.5.2', date: '2026-03-22', note: '学習カテゴリをテクニック一覧から分離・浸食バグ修正' },
   { ver: 'v1.5.1', date: '2026-03-22', note: '勉強アプリをScratch学習専用に変更' },
   { ver: 'v1.5.0', date: '2026-03-22', note: 'ポータル画面・べんきょうアプリ追加' },
@@ -26,6 +27,8 @@ function getGeminiKey() { return localStorage.getItem('gemini_api_key')     || D
 const DRIVE_SCOPE = 'https://www.googleapis.com/auth/drive.file';
 const ROOT_FOLDER_NAME = 'Scratch Techniques';
 const DATA_FILE_NAME = 'techniques.json';
+const STUDY_DATA_FILE_NAME = 'study-lessons.json';
+const STUDY_SLIDES_FOLDER_NAME = 'study-slides';
 
 const CATEGORIES = [
   'すべて',
@@ -81,7 +84,10 @@ const appState = {
   rootFolderId: localStorage.getItem('root_folder_id') || null,
   sb3FolderId: localStorage.getItem('sb3_folder_id') || null,
   dataFileId: localStorage.getItem('data_file_id') || null,
+  studyDataFileId: localStorage.getItem('study_data_file_id') || null,
+  studySlidesFolderId: localStorage.getItem('study_slides_folder_id') || null,
   techniques: [],
+  lessons: [],
   user: null,
 };
 
@@ -335,6 +341,71 @@ async function saveTechniques() {
     appState.dataFileId = r.id;
     localStorage.setItem('data_file_id', r.id);
     return r;
+  }
+}
+
+// ============================================================
+// STUDY LESSONS DATA
+// ============================================================
+async function setupStudyFolders() {
+  if (!appState.rootFolderId) await setupDriveFolders();
+  if (!appState.studySlidesFolderId) {
+    appState.studySlidesFolderId = await findOrCreateFolder(STUDY_SLIDES_FOLDER_NAME, appState.rootFolderId);
+    localStorage.setItem('study_slides_folder_id', appState.studySlidesFolderId);
+  }
+}
+
+async function loadLessons() {
+  await setupStudyFolders();
+  if (!appState.studyDataFileId) {
+    const r = await driveAPI('GET', '/files', null, {
+      q: `name='${STUDY_DATA_FILE_NAME}' and '${appState.rootFolderId}' in parents and trashed=false`,
+      fields: 'files(id)', spaces: 'drive',
+    });
+    if (r.files?.length) {
+      appState.studyDataFileId = r.files[0].id;
+      localStorage.setItem('study_data_file_id', appState.studyDataFileId);
+    }
+  }
+  if (appState.studyDataFileId) {
+    await ensureToken();
+    const res = await fetch(
+      `https://www.googleapis.com/drive/v3/files/${appState.studyDataFileId}?alt=media`,
+      { headers: { Authorization: `Bearer ${appState.accessToken}` } }
+    );
+    if (res.ok) {
+      const data = await res.json().catch(() => ({ lessons: [] }));
+      appState.lessons = data.lessons || [];
+      return;
+    }
+  }
+  appState.lessons = [];
+}
+
+async function saveLessons() {
+  await setupStudyFolders();
+  const json = JSON.stringify({ lessons: appState.lessons }, null, 2);
+  const blob = new Blob([json], { type: 'application/json' });
+  const metaBlob = new Blob(
+    [JSON.stringify({ name: STUDY_DATA_FILE_NAME, parents: appState.studyDataFileId ? undefined : [appState.rootFolderId] })],
+    { type: 'application/json' }
+  );
+  const fd = new FormData();
+  fd.append('metadata', metaBlob);
+  fd.append('file', blob);
+  if (appState.studyDataFileId) {
+    await fetch(
+      `https://www.googleapis.com/upload/drive/v3/files/${appState.studyDataFileId}?uploadType=multipart`,
+      { method: 'PATCH', headers: { Authorization: `Bearer ${appState.accessToken}` }, body: fd }
+    );
+  } else {
+    const res = await fetch(
+      'https://www.googleapis.com/upload/drive/v3/files?uploadType=multipart&fields=id',
+      { method: 'POST', headers: { Authorization: `Bearer ${appState.accessToken}` }, body: fd }
+    );
+    const r = await res.json();
+    appState.studyDataFileId = r.id;
+    localStorage.setItem('study_data_file_id', r.id);
   }
 }
 

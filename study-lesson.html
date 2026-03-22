@@ -1,0 +1,87 @@
+<!DOCTYPE html>
+<html lang="ja">
+<head>
+  <meta charset="UTF-8">
+  <script>(function(){var t=localStorage.getItem('theme');document.documentElement.setAttribute('data-theme',t||(window.matchMedia&&matchMedia('(prefers-color-scheme:dark)').matches?'dark':'light'));})();</script>
+  <meta name="viewport" content="width=device-width,initial-scale=1">
+  <title>レッスン - べんきょうアプリ</title>
+  <link rel="stylesheet" href="css/main.css">
+</head>
+<body style="overflow:hidden">
+
+<div id="loading"><div class="spinner"></div><p>よみこみちゅう...</p></div>
+
+<div id="app-content" class="hidden" style="display:flex;flex-direction:column;height:100vh">
+
+  <!-- Header -->
+  <header class="header study-header" style="flex-shrink:0">
+    <div class="header-inner">
+      <a href="study.html" class="btn btn-ghost btn-icon">
+        <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M19 12H5M12 5l-7 7 7 7"/></svg>
+      </a>
+      <span class="study-header-title" id="lesson-title">レッスン</span>
+      <div class="header-actions" style="margin-left:auto">
+        <span id="lesson-diff" style="font-size:0.9rem"></span>
+        <button class="theme-toggle" onclick="toggleDarkMode()">🌙</button>
+      </div>
+    </div>
+  </header>
+
+  <!-- Main split layout -->
+  <div class="lesson-layout" style="flex:1;overflow:hidden">
+
+    <!-- Left: Scratch -->
+    <div class="lesson-scratch-panel">
+      <div class="scratch-iframe-wrap" id="scratch-wrap">
+        <iframe id="scratch-iframe"
+          allowfullscreen scrolling="no" frameborder="0"
+          sandbox="allow-same-origin allow-scripts allow-popups allow-forms"
+          src="about:blank">
+        </iframe>
+      </div>
+      <div class="scratch-panel-btns" id="scratch-btns">
+        <a id="scratch-open-btn" href="#" target="_blank" rel="noopener" class="btn btn-sm btn-ghost" style="color:white;border-color:rgba(255,255,255,0.3)">
+          🔗 Scratchで開く
+        </a>
+      </div>
+      <p id="scratch-no-url" style="color:rgba(255,255,255,0.4);font-size:0.82rem;display:none">
+        ScratchのURLが登録されていません
+      </p>
+    </div>
+
+    <!-- Right: Slides -->
+    <div class="lesson-slide-panel">
+      <div class="slide-viewer" id="slide-viewer">
+        <img id="slide-img" src="" alt="" style="display:none">
+        <div class="slide-empty-msg" id="slide-empty">
+          <div style="font-size:48px;margin-bottom:12px">🖼️</div>
+          <p>スライドがありません</p>
+        </div>
+      </div>
+      <div class="slide-nav-bar" id="slide-nav-bar">
+        <button class="btn btn-ghost btn-icon" id="btn-prev" onclick="prevSlide()">
+          <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><path d="M15 18l-6-6 6-6"/></svg>
+        </button>
+        <div style="flex:1;text-align:center">
+          <div class="slide-dots" id="slide-dots"></div>
+          <div class="slide-counter" id="slide-counter" style="margin-top:4px">0 / 0</div>
+        </div>
+        <button class="btn btn-ghost btn-icon" id="btn-next" onclick="nextSlide()">
+          <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><path d="M9 18l6-6-6-6"/></svg>
+        </button>
+      </div>
+    </div>
+
+  </div>
+</div>
+
+<style>
+  #app-content.hidden { display: none !important; }
+  body { margin: 0; }
+</style>
+
+<script src="https://accounts.google.com/gsi/client" async defer></script>
+<script src="js/app.js"></script>
+<script src="js/study-lesson.js"></script>
+</body>
+</html>

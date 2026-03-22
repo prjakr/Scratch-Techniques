@@ -1,0 +1,93 @@
+<!DOCTYPE html>
+<html lang="ja">
+<head>
+  <meta charset="UTF-8">
+  <script>(function(){var t=localStorage.getItem('theme');document.documentElement.setAttribute('data-theme',t||(window.matchMedia&&matchMedia('(prefers-color-scheme:dark)').matches?'dark':'light'));})();</script>
+  <meta name="viewport" content="width=device-width,initial-scale=1">
+  <title>レッスンを追加 - べんきょうアプリ</title>
+  <link rel="stylesheet" href="css/main.css">
+</head>
+<body>
+
+<div id="loading"><div class="spinner"></div><p>保存中...</p></div>
+
+<header class="header study-header">
+  <div class="header-inner">
+    <a href="study.html" class="btn btn-ghost btn-icon">
+      <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M19 12H5M12 5l-7 7 7 7"/></svg>
+    </a>
+    <span class="study-header-title">📝 レッスンを追加</span>
+    <div class="header-actions" style="margin-left:auto">
+      <button class="theme-toggle" onclick="toggleDarkMode()">🌙</button>
+      <button id="save-btn" class="btn btn-sm" style="background:rgba(255,255,255,0.2);color:white;border-color:rgba(255,255,255,0.4);font-weight:700">
+        ✓ 保存
+      </button>
+    </div>
+  </div>
+</header>
+
+<div class="form-page">
+  <div class="form-card">
+    <h2>➕ 新しいレッスンを追加</h2>
+
+    <!-- Title -->
+    <div class="form-row">
+      <label for="title">タイトル <span class="required">*</span></label>
+      <input type="text" id="title" placeholder="例: うごきを学ぼう" maxlength="100" autocomplete="off">
+      <span class="field-error" id="title-error"></span>
+    </div>
+
+    <!-- Category & Difficulty -->
+    <div class="form-row-2">
+      <div>
+        <label for="category">カテゴリ</label>
+        <select id="category"></select>
+      </div>
+      <div>
+        <label>むずかしさ</label>
+        <div class="diff-select">
+          <button type="button" class="diff-btn active" data-diff="かんたん">⭐<br>かんたん</button>
+          <button type="button" class="diff-btn" data-diff="ふつう">⭐⭐<br>ふつう</button>
+          <button type="button" class="diff-btn" data-diff="むずかしい">⭐⭐⭐<br>むずかしい</button>
+        </div>
+      </div>
+    </div>
+
+    <!-- Scratch URL -->
+    <div class="form-row">
+      <label for="scratch-url">Scratch プロジェクトURL</label>
+      <input type="url" id="scratch-url" placeholder="https://scratch.mit.edu/projects/123456789" autocomplete="off">
+      <p class="input-hint">ScratchのURLを入れると授業中に実際に動かせます</p>
+      <div id="scratch-preview" class="mt-3"></div>
+    </div>
+
+    <!-- Slide upload -->
+    <div class="form-row">
+      <label>スライド画像 <span style="font-weight:400;color:var(--text-muted);font-size:0.8rem">（PNG/JPG、複数選択可）</span></label>
+      <div class="file-upload-area" id="slide-drop-area" style="padding:24px">
+        <input type="file" id="slide-files" accept="image/*" multiple style="display:none">
+        <span class="upload-icon">🖼️</span>
+        <p class="upload-text">クリックまたはドラッグ＆ドロップで画像を追加</p>
+        <p class="upload-hint">スライド順に並べ替えできます</p>
+      </div>
+      <div class="slide-upload-grid" id="slide-preview-grid"></div>
+    </div>
+
+    <!-- Description -->
+    <div class="form-row">
+      <label for="description">メモ・説明</label>
+      <textarea id="description" rows="4" placeholder="レッスンの説明やポイントを書いてください"></textarea>
+    </div>
+
+    <div class="form-actions">
+      <a href="study.html" class="btn btn-ghost btn-lg">キャンセル</a>
+      <button id="save-btn2" class="btn btn-primary btn-lg">✓ 保存する</button>
+    </div>
+  </div>
+</div>
+
+<script src="https://accounts.google.com/gsi/client" async defer></script>
+<script src="js/app.js"></script>
+<script src="js/study-add.js"></script>
+</body>
+</html>
