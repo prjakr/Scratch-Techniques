@@ -1,0 +1,93 @@
+<!DOCTYPE html>
+<html lang="ja">
+<head>
+  <meta charset="UTF-8">
+  <script>(function(){var t=localStorage.getItem('theme');document.documentElement.setAttribute('data-theme',t||(window.matchMedia&&matchMedia('(prefers-color-scheme:dark)').matches?'dark':'light'));})();</script>
+  <meta name="viewport" content="width=device-width,initial-scale=1">
+  <title>べんきょうアプリ - Scratch World</title>
+  <link rel="stylesheet" href="css/main.css">
+  <link rel="icon" href="data:image/svg+xml,<svg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 100 100'><text y='.9em' font-size='90'>📚</text></svg>">
+</head>
+<body>
+
+<!-- Loading -->
+<div id="loading">
+  <div class="spinner"></div>
+  <p>よみこみちゅう...</p>
+</div>
+
+<!-- Auth Screen -->
+<div id="auth-screen">
+  <div class="auth-card">
+    <span class="auth-logo" style="filter:drop-shadow(0 4px 12px rgba(249,115,22,0.4))">📚</span>
+    <h1 style="background:linear-gradient(135deg,#f97316,#ec4899);-webkit-background-clip:text;-webkit-text-fill-color:transparent;background-clip:text">べんきょうアプリ</h1>
+    <p>Scratchで楽しく勉強しよう！</p>
+    <div class="auth-features">
+      <div class="auth-feature"><span>🔢</span><span>算数</span></div>
+      <div class="auth-feature"><span>📖</span><span>国語</span></div>
+      <div class="auth-feature"><span>🔬</span><span>理科</span></div>
+      <div class="auth-feature"><span>🌏</span><span>社会</span></div>
+    </div>
+    <button id="signin-btn" class="btn btn-lg" style="width:100%;justify-content:center;background:linear-gradient(135deg,#f97316,#ec4899);color:white;border:none;box-shadow:0 4px 20px rgba(249,115,22,0.35)">
+      <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="white" stroke-width="2"><path d="M15 3h4a2 2 0 0 1 2 2v14a2 2 0 0 1-2 2h-4M10 17l5-5-5-5M15 12H3"/></svg>
+      Googleでサインイン
+    </button>
+    <p style="font-size:0.78rem;color:var(--text-light);margin-top:16px">
+      <a href="index.html" style="color:var(--text-light)">← トップにもどる</a>
+    </p>
+  </div>
+</div>
+
+<!-- App Content -->
+<div id="app-content" class="hidden">
+
+  <!-- Header -->
+  <header class="header study-header">
+    <div class="header-inner">
+      <a href="index.html" class="btn btn-ghost btn-icon" title="トップへ">
+        <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+          <path d="M19 12H5M12 5l-7 7 7 7"/>
+        </svg>
+      </a>
+      <span class="study-header-title">📚 べんきょうアプリ</span>
+      <div class="header-actions" style="margin-left:auto">
+        <a href="add.html" class="study-add-btn">＋ 追加</a>
+        <button class="theme-toggle" onclick="toggleDarkMode()" title="ダークモード">🌙</button>
+        <button class="btn btn-ghost btn-icon" onclick="signOut()" title="サインアウト" style="color:rgba(255,255,255,0.8)">
+          <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8">
+            <path d="M9 21H5a2 2 0 0 1-2-2V5a2 2 0 0 1 2-2h4M16 17l5-5-5-5M21 12H9"/>
+          </svg>
+        </button>
+      </div>
+    </div>
+  </header>
+
+  <!-- Subject tabs -->
+  <div class="study-subjects-wrap">
+    <div class="study-subjects" id="subject-list"></div>
+  </div>
+
+  <!-- Grade filter -->
+  <div class="study-grades-wrap">
+    <div class="study-grades" id="grade-list"></div>
+  </div>
+
+  <!-- Main grid -->
+  <main class="study-main">
+    <p class="study-count" id="study-count"></p>
+    <div class="study-grid" id="study-grid"></div>
+  </main>
+
+</div>
+
+<style>
+  #app-content.hidden { display: none; }
+  #auth-screen { display: none; }
+  #auth-screen.visible { display: flex; }
+</style>
+
+<script src="https://accounts.google.com/gsi/client" async defer></script>
+<script src="js/app.js"></script>
+<script src="js/study.js"></script>
+</body>
+</html>

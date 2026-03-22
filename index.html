@@ -10,6 +10,33 @@
 </head>
 <body>
 
+<!-- Portal Screen -->
+<div id="portal-screen" style="display:none">
+  <div class="portal-stars"></div>
+  <div class="portal-wrap">
+    <span class="portal-logo">🐱</span>
+    <h1 class="portal-title">Scratch World</h1>
+    <p class="portal-sub">なにをする？</p>
+    <div class="portal-choices">
+      <button class="portal-card portal-tech" onclick="chooseApp('techniques')">
+        <span class="portal-card-icon">🎮</span>
+        <h2>テクニック集</h2>
+        <p>プログラミングの<br>テクニックを管理・学習</p>
+        <span class="portal-arrow">→</span>
+      </button>
+      <button class="portal-card portal-study" onclick="chooseApp('study')">
+        <span class="portal-card-icon">📚</span>
+        <h2>べんきょうアプリ</h2>
+        <p>Scratchで楽しく<br>勉強しよう！</p>
+        <span class="portal-arrow">→</span>
+      </button>
+    </div>
+    <p class="portal-footer">
+      <a href="settings.html">⚙️ 設定</a>
+    </p>
+  </div>
+</div>
+
 <!-- Loading -->
 <div id="loading">
   <div class="spinner"></div>
@@ -56,6 +83,7 @@
           placeholder="テクニックを検索..." autocomplete="off">
       </div>
       <div class="header-actions">
+        <a href="study.html" class="btn btn-ghost btn-sm" title="勉強アプリ">📚 べんきょう</a>
 <a href="add.html" class="btn btn-primary">
           <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5">
             <path d="M12 5v14M5 12h14"/>
@@ -115,6 +143,12 @@
 <script src="js/dashboard.js"></script>
 <script src="js/claude.js"></script>
 <script>
+  function chooseApp(mode) {
+    document.getElementById('portal-screen').style.display = 'none';
+    if (mode === 'study') { window.location.href = 'study.html'; return; }
+    document.getElementById('auth-screen').classList.add('visible');
+  }
+
   // Show FAB after sign in
   const origOnSignIn = onSignIn;
   window.onSignIn = async function() {

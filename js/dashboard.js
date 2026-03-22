@@ -162,7 +162,7 @@ document.addEventListener('DOMContentLoaded', () => {
       const ok = initGoogleAuth();
       if (!ok) {
         showLoading(false);
-        document.getElementById('auth-screen')?.classList.add('visible');
+        showPortalOrAuth();
         return;
       }
       // Try silent sign-in
@@ -173,11 +173,20 @@ document.addEventListener('DOMContentLoaded', () => {
         tokenClient.requestAccessToken({ prompt: '' });
       } else {
         showLoading(false);
-        document.getElementById('auth-screen')?.classList.add('visible');
+        showPortalOrAuth();
       }
     } else {
       setTimeout(tryInit, 200);
     }
   };
   tryInit();
+
+  function showPortalOrAuth() {
+    const portal = document.getElementById('portal-screen');
+    if (portal) {
+      portal.style.display = '';
+    } else {
+      document.getElementById('auth-screen')?.classList.add('visible');
+    }
+  }
 });
