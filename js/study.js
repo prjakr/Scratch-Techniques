@@ -3,23 +3,21 @@
 // ============================================================
 
 const SUBJECTS = [
-  { id: 'all',      label: 'ぜんぶ',   emoji: '🎯', color: '#6366f1' },
-  { id: '算数',     label: 'さんすう', emoji: '🔢', color: '#6366f1' },
-  { id: '国語',     label: 'こくご',   emoji: '📖', color: '#ec4899' },
-  { id: '理科',     label: 'りか',     emoji: '🔬', color: '#10b981' },
-  { id: '社会',     label: 'しゃかい', emoji: '🌏', color: '#f59e0b' },
-  { id: '英語',     label: 'えいご',   emoji: '🔤', color: '#3b82f6' },
-  { id: '道徳・生活', label: 'どうとく', emoji: '🌱', color: '#8b5cf6' },
+  { id: 'all',       label: 'ぜんぶ',    emoji: '🎯', color: '#6366f1' },
+  { id: 'きほん',    label: 'きほん',    emoji: '⭐', color: '#6366f1' },
+  { id: 'うごき',    label: 'うごき',    emoji: '🏃', color: '#f97316' },
+  { id: 'みため',    label: 'みため',    emoji: '👀', color: '#ec4899' },
+  { id: 'おと・音楽', label: 'おと',     emoji: '🎵', color: '#8b5cf6' },
+  { id: 'せいぎょ',  label: 'せいぎょ',  emoji: '🔄', color: '#10b981' },
+  { id: 'ゲーム作り', label: 'ゲーム',   emoji: '🎮', color: '#3b82f6' },
+  { id: 'アート・アニメ', label: 'アート', emoji: '🎨', color: '#f59e0b' },
 ];
 
 const GRADES = [
-  { id: 'all',   label: 'ぜんぶ' },
-  { id: '1ねん', label: '1ねん' },
-  { id: '2ねん', label: '2ねん' },
-  { id: '3ねん', label: '3ねん' },
-  { id: '4ねん', label: '4ねん' },
-  { id: '5ねん', label: '5ねん' },
-  { id: '6ねん', label: '6ねん' },
+  { id: 'all',    label: 'ぜんぶ' },
+  { id: 'かんたん', label: 'かんたん' },
+  { id: 'ふつう',  label: 'ふつう'  },
+  { id: 'むずかしい', label: 'むずかしい' },
 ];
 
 let currentSubject = 'all';
