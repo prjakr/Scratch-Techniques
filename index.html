@@ -30,6 +30,12 @@
         <p>Scratchで楽しく<br>勉強しよう！</p>
         <span class="portal-arrow">→</span>
       </button>
+      <button class="portal-card portal-microbit" onclick="chooseApp('microbit')">
+        <span class="portal-card-icon">🔲</span>
+        <h2>マイクロビット</h2>
+        <p>センサーずかんと<br>かいろのきほん</p>
+        <span class="portal-arrow">→</span>
+      </button>
     </div>
     <p class="portal-footer">
       <a href="settings.html">⚙️ 設定</a>
@@ -84,6 +90,7 @@
       </div>
       <div class="header-actions">
         <a href="study.html" class="btn btn-ghost btn-sm" title="勉強アプリ">📚 べんきょう</a>
+        <a href="https://prjakr.github.io/microbit-app/" target="_blank" rel="noopener" class="btn btn-ghost btn-sm" title="マイクロビット">🔲 マイクロビット</a>
 <a href="add.html" class="btn btn-primary">
           <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5">
             <path d="M12 5v14M5 12h14"/>
@@ -146,6 +153,7 @@
   function chooseApp(mode) {
     document.getElementById('portal-screen').style.display = 'none';
     if (mode === 'study') { window.location.href = 'study.html'; return; }
+    if (mode === 'microbit') { window.location.href = 'https://prjakr.github.io/microbit-app/'; return; }
     document.getElementById('auth-screen').classList.add('visible');
   }
 
