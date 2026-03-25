@@ -19,10 +19,7 @@ const CHANGELOG = [
 // デフォルト設定（自動入力）- localStorageが空のとき使われる
 // ============================================================
 const DEFAULT_CLIENT_ID  = '909131026-gdchr152acqnusc2mq3ue51341g5o71i.apps.googleusercontent.com';
-const DEFAULT_GEMINI_KEY = 'AIzaSyBclzhxuoVrKAe6w4wbCQG8Iq4NtwxcGt0';
-
-function getClientId()  { return localStorage.getItem('google_client_id')  || DEFAULT_CLIENT_ID;  }
-function getGeminiKey() { return localStorage.getItem('gemini_api_key')     || DEFAULT_GEMINI_KEY; }
+function getClientId() { return localStorage.getItem('google_client_id') || DEFAULT_CLIENT_ID; }
 
 const DRIVE_SCOPE = 'https://www.googleapis.com/auth/drive.file';
 const ROOT_FOLDER_NAME = 'Scratch Techniques';

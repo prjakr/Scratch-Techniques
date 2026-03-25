@@ -124,71 +124,6 @@
     </details>
   </div>
 
-  <!-- Gemini AI Section -->
-  <div class="settings-section">
-    <h3>
-      <span style="font-size:1.1rem">✨</span>
-      AI アシスタント設定（Google Gemini・完全無料）
-    </h3>
-
-    <!-- Free tier badge -->
-    <div style="background:linear-gradient(135deg,#ecfdf5,#f0fdf4);border:1.5px solid #a7f3d0;
-      border-radius:10px;padding:12px 16px;margin-bottom:16px;font-size:0.85rem;color:#065f46;">
-      🎉 <strong>完全無料！</strong> Gemini 1.5 Flash は無料枠で使用できます<br>
-      <span style="font-size:0.78rem;opacity:0.8">無料枠: 1日1,500回・毎分15回・毎分100万トークン</span>
-    </div>
-
-    <div id="gemini-status" style="margin-bottom:16px"></div>
-
-    <div class="form-row">
-      <label for="gemini-api-key">Google Gemini API Key</label>
-      <div class="api-key-wrap">
-        <input type="password" id="gemini-api-key"
-          placeholder="AIzaSy..."
-          autocomplete="off">
-        <button class="toggle-visibility" onclick="toggleVis('gemini-api-key')">👁</button>
-      </div>
-      <p class="input-hint">
-        <a href="https://aistudio.google.com/app/apikey" target="_blank" rel="noopener"
-          style="color:var(--primary);font-weight:600">Google AI Studio</a>
-        で無料で取得できます（Googleアカウントのみ必要）
-      </p>
-    </div>
-
-    <div class="settings-info">
-      ⚠️ APIキーはブラウザのlocalStorageに保存されます。個人での使用を想定しています。
-    </div>
-
-    <div style="margin-top:12px;display:flex;gap:10px;align-items:center;flex-wrap:wrap">
-      <button class="btn btn-primary" onclick="saveGeminiKey()">保存</button>
-      <button class="btn btn-secondary" onclick="testGemini()">接続テスト</button>
-      <span id="gemini-test-result" style="font-size:0.85rem"></span>
-    </div>
-
-    <div class="divider"></div>
-
-    <details>
-      <summary style="cursor:pointer;font-weight:600;font-size:0.9rem;color:var(--primary);margin-bottom:12px">
-        📋 Gemini APIキー取得手順（2分でできます）
-      </summary>
-      <div class="setup-guide">
-        <ol>
-          <li>
-            <a href="https://aistudio.google.com/app/apikey" target="_blank" rel="noopener"
-              style="color:var(--primary)">Google AI Studio</a> をGoogleアカウントで開く
-          </li>
-          <li>「Create API key」ボタンをクリック</li>
-          <li>「Create API key in new project」を選択</li>
-          <li>生成されたキー（<code>AIzaSy...</code>）をコピー</li>
-          <li>上の入力欄に貼り付けて「保存」</li>
-        </ol>
-        <p style="margin-top:10px;color:#065f46">
-          ✅ クレジットカード不要・完全無料で使えます
-        </p>
-      </div>
-    </details>
-  </div>
-
   <!-- App Settings -->
   <div class="settings-section">
     <h3>
@@ -267,14 +202,12 @@
 // ============================================================
 function generateQR() {
   const clientId = localStorage.getItem('google_client_id') || '';
-  const geminiKey = localStorage.getItem('gemini_api_key') || '';
-
-  if (!clientId && !geminiKey) {
+  if (!clientId) {
     showToast('先にClient IDとAPIキーを保存してください', 'error');
     return;
   }
 
-  const payload = btoa(JSON.stringify({ g: clientId, k: geminiKey }));
+  const payload = btoa(JSON.stringify({ g: clientId }));
   const url = window.location.origin + window.location.pathname + '?setup=' + payload;
   const qrApiUrl = 'https://api.qrserver.com/v1/create-qr-code/?size=240x240&margin=10&data=' + encodeURIComponent(url);
 
@@ -324,14 +257,10 @@ function checkSetupParam() {
     const data = JSON.parse(atob(setup));
     let imported = [];
     if (data.g) { localStorage.setItem('google_client_id', data.g); imported.push('Client ID'); }
-    if (data.k) { localStorage.setItem('gemini_api_key', data.k); imported.push('Gemini APIキー'); }
-    // URLパラメータを除去してリロード
     history.replaceState({}, '', location.pathname);
     if (imported.length > 0) {
       showToast('設定をインポートしました: ' + imported.join('・') + ' ✓', 'success');
       document.getElementById('google-client-id').value = localStorage.getItem('google_client_id') || '';
-      document.getElementById('gemini-api-key').value = localStorage.getItem('gemini_api_key') || '';
-      updateGeminiStatus();
     }
   } catch(e) {
     showToast('設定のインポートに失敗しました', 'error');
@@ -363,15 +292,12 @@ window.addEventListener('DOMContentLoaded', () => {
 
   document.getElementById('google-client-id').value =
     localStorage.getItem('google_client_id') || '';
-  document.getElementById('gemini-api-key').value =
-    localStorage.getItem('gemini_api_key') || '';
 
   checkSetupParam();
 
   // Toggles
   initToggle('scratch-link-mode', 'scratch-slider', 'scratch_embed', 'link', '');
 
-  updateGeminiStatus();
   updateAuthStatus();
 
   // Init Google auth if clientId exists
@@ -464,60 +390,6 @@ function updateAuthStatus() {
     el.innerHTML = `<span class="status-badge status-ng">✗ 未サインイン</span>`;
     document.getElementById('signin-btn').style.display = '';
     document.getElementById('signout-btn').style.display = 'none';
-  }
-}
-
-// ============================================================
-// GEMINI
-// ============================================================
-function saveGeminiKey() {
-  const val = document.getElementById('gemini-api-key').value.trim();
-  if (!val) { showToast('APIキーを入力してください', 'error'); return; }
-  if (!val.startsWith('AIza')) {
-    showToast('Gemini APIキーは「AIza」で始まります', 'warning');
-  }
-  localStorage.setItem('gemini_api_key', val);
-  showToast('Gemini APIキーを保存しました ✓');
-  updateGeminiStatus();
-}
-
-function updateGeminiStatus() {
-  const el = document.getElementById('gemini-status');
-  if (!el) return;
-  const key = localStorage.getItem('gemini_api_key');
-  el.innerHTML = key
-    ? `<span class="status-badge status-ok">✓ APIキー設定済み（無料）</span>`
-    : `<span class="status-badge status-ng">✗ APIキー未設定</span>`;
-}
-
-async function testGemini() {
-  const key = getGeminiKey();
-  const result = document.getElementById('gemini-test-result');
-  if (!key) { result.textContent = '❌ APIキーが設定されていません'; return; }
-
-  result.textContent = '⏳ テスト中...';
-  try {
-    const res = await fetch(
-      `https://generativelanguage.googleapis.com/v1beta/models/gemini-2.5-flash:generateContent?key=${key}`,
-      {
-        method: 'POST',
-        headers: { 'Content-Type': 'application/json' },
-        body: JSON.stringify({
-          contents: [{ role: 'user', parts: [{ text: 'こんにちは' }] }],
-          generationConfig: { maxOutputTokens: 20 },
-        }),
-      }
-    );
-    if (res.ok) {
-      const data = await res.json();
-      const text = data.candidates?.[0]?.content?.parts?.[0]?.text || 'OK';
-      result.innerHTML = `✅ <span style="color:var(--success)">接続成功！「${text.slice(0, 20)}」</span>`;
-    } else {
-      const err = await res.json().catch(() => ({}));
-      result.innerHTML = `❌ <span style="color:var(--error)">${err.error?.message || 'HTTP ' + res.status}</span>`;
-    }
-  } catch (e) {
-    result.innerHTML = `❌ <span style="color:var(--error)">${e.message}</span>`;
   }
 }
 
