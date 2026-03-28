@@ -84,12 +84,16 @@ function renderCards() {
   const emoji = c => ({ 'きほん':'⭐','うごき':'🏃','みため':'👀','おと・音楽':'🎵','せいぎょ':'🔄','ゲーム作り':'🎮','アート・アニメ':'🎨' }[c] || '📚');
 
   grid.innerHTML = items.map(l => {
-    const thumb = l.slides?.[0]
-      ? `<img src="${getDriveImageUrl(l.slides[0].fileId)}" alt="" loading="lazy">`
-      : `<span>${emoji(l.category)}</span>`;
+    const thumb = l.thumbnailFileId
+      ? `<img src="${getDriveImageUrl(l.thumbnailFileId)}" alt="" loading="lazy">`
+      : l.slides?.[0]
+        ? `<img src="${getDriveImageUrl(l.slides[0].fileId)}" alt="" loading="lazy">`
+        : `<span>${emoji(l.category)}</span>`;
     return `
       <div class="study-card" style="--card-color:${color(l.category)}">
-        <div class="study-card-thumb">${thumb}</div>
+        <div class="study-card-thumb">${thumb}
+          <a href="study-add.html?edit=${l.id}" class="study-card-edit" title="編集">✏️</a>
+        </div>
         <div class="study-card-top">
           <span class="study-card-emoji">${emoji(l.category)}</span>
           <span class="study-card-cat">${escapeHtml(l.category || '')}</span>
