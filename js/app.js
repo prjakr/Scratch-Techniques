@@ -2,7 +2,7 @@
 // app.js - Core: Auth, Google Drive API, Data Management
 // ============================================================
 
-const APP_VERSION = 'v1.7.0';
+const APP_VERSION = 'v1.7.1';
 const CHANGELOG = [
   { ver: 'v1.7.0', date: '2026-03-22', note: 'べんきょうアプリ全面改修：スライド+Scratch授業ビューア実装' },
   { ver: 'v1.5.2', date: '2026-03-22', note: '学習カテゴリをテクニック一覧から分離・浸食バグ修正' },

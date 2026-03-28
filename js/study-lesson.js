@@ -62,8 +62,10 @@ function renderSlide() {
   const prevBtn = document.getElementById('btn-prev');
   const nextBtn = document.getElementById('btn-next');
 
+  const iframe = document.getElementById('slide-iframe');
   if (slides.length === 0) {
     img.style.display = 'none';
+    iframe.style.display = 'none';
     empty.style.display = '';
     nav.style.display = 'none';
     return;
@@ -71,8 +73,16 @@ function renderSlide() {
 
   empty.style.display = 'none';
   nav.style.display = '';
-  img.style.display = '';
-  img.src = getDriveImageUrl(slides[currentSlide].fileId);
+  const slide = slides[currentSlide];
+  if (slide.fileType === 'pdf' || slide.fileType === 'pptx') {
+    img.style.display = 'none';
+    iframe.style.display = '';
+    iframe.src = `https://drive.google.com/file/d/${slide.fileId}/preview`;
+  } else {
+    iframe.style.display = 'none';
+    img.style.display = '';
+    img.src = getDriveImageUrl(slide.fileId);
+  }
   counter.textContent = `${currentSlide + 1} / ${slides.length}`;
 
   // Dots

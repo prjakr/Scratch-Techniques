@@ -13,6 +13,8 @@ function onSignIn() {}
 function onSignOut() { window.location.href = 'study.html'; }
 
 document.addEventListener('DOMContentLoaded', () => {
+  const vb = document.getElementById('ver-badge');
+  if (vb && typeof APP_VERSION !== 'undefined') vb.textContent = APP_VERSION;
   updateThemeIcon();
 
   // 編集モード判定
@@ -110,11 +112,23 @@ function removeThumb() {
   document.getElementById('thumb-drop-area').style.display = '';
 }
 
+// ── ファイルタイプ判定 ────────────────────────────────────────
+function getFileType(file) {
+  if (file.type.startsWith('image/')) return 'image';
+  if (file.type === 'application/pdf') return 'pdf';
+  if (file.name.match(/\.pptx?$/i)) return 'pptx';
+  return 'image';
+}
+function fileTypeIcon(type) {
+  return { image: '🖼️', pdf: '📄', pptx: '📊' }[type] || '📎';
+}
+
 // ── スライド ─────────────────────────────────────────────────
 function addFiles(fileList) {
   Array.from(fileList).forEach(f => {
-    if (!f.type.startsWith('image/')) return;
-    selectedFiles.push({ file: f, previewUrl: URL.createObjectURL(f) });
+    const type = getFileType(f);
+    const previewUrl = type === 'image' ? URL.createObjectURL(f) : null;
+    selectedFiles.push({ file: f, previewUrl, fileType: type });
   });
   renderSlidePreviews();
 }
@@ -126,22 +140,30 @@ function removeExistingSlide(idx) {
   existingSlides.splice(idx, 1);
   renderSlidePreviews();
 }
+function slideThumbHtml(s, label, color, removeCall) {
+  const inner = s.previewUrl
+    ? `<img src="${s.previewUrl}" alt="">`
+    : `<div style="width:100%;height:100%;display:flex;flex-direction:column;align-items:center;justify-content:center;font-size:22px;color:var(--text-muted);gap:4px">
+        <span>${fileTypeIcon(s.fileType)}</span>
+        <span style="font-size:8px;padding:0 4px;text-align:center;overflow:hidden;word-break:break-all">${escapeHtml((s.name||s.file?.name||'').slice(0,20))}</span>
+       </div>`;
+  return `<div class="slide-thumb-item">
+    ${inner}
+    <span style="position:absolute;bottom:3px;left:4px;font-size:9px;color:white;background:${color};padding:1px 4px;border-radius:4px">${label}</span>
+    <button class="slide-thumb-remove" onclick="${removeCall}">✕</button>
+  </div>`;
+}
 function renderSlidePreviews() {
   const grid = document.getElementById('slide-preview-grid');
-  const existingHtml = existingSlides.map((s, i) => `
-    <div class="slide-thumb-item">
-      <img src="${getDriveImageUrl(s.fileId)}" alt="slide ${i+1}">
-      <span style="position:absolute;bottom:3px;left:4px;font-size:9px;color:white;background:rgba(0,0,0,0.5);padding:1px 4px;border-radius:4px">保存済</span>
-      <button class="slide-thumb-remove" onclick="removeExistingSlide(${i})">✕</button>
-    </div>
-  `).join('');
-  const newHtml = selectedFiles.map((s, i) => `
-    <div class="slide-thumb-item">
-      <img src="${s.previewUrl}" alt="new ${i+1}">
-      <span style="position:absolute;bottom:3px;left:4px;font-size:9px;color:white;background:rgba(99,102,241,0.7);padding:1px 4px;border-radius:4px">新規</span>
-      <button class="slide-thumb-remove" onclick="removeSlide(${i})">✕</button>
-    </div>
-  `).join('');
+  const existingHtml = existingSlides.map((s, i) =>
+    slideThumbHtml(
+      { previewUrl: s.fileType === 'image' ? getDriveImageUrl(s.fileId) : null, name: s.name, fileType: s.fileType || 'image' },
+      '保存済', 'rgba(0,0,0,0.5)', `removeExistingSlide(${i})`
+    )
+  ).join('');
+  const newHtml = selectedFiles.map((s, i) =>
+    slideThumbHtml(s, '新規', 'rgba(99,102,241,0.7)', `removeSlide(${i})`)
+  ).join('');
   grid.innerHTML = existingHtml + newHtml;
 }
 
@@ -221,7 +243,7 @@ async function saveLesson() {
         selectedFiles[i].file, appState.studySlidesFolderId,
         `slide_${Date.now()}_${i}.${selectedFiles[i].file.name.split('.').pop()}`
       );
-      slides.push({ fileId: r.id, name: r.name });
+      slides.push({ fileId: r.id, name: r.name, fileType: selectedFiles[i].fileType || 'image' });
     }
 
     const scratchUrl = document.getElementById('scratch-url').value.trim();
